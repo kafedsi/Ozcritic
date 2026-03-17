@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OzCritic — Title</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f7f5f2;
+  --paper: #ffffff;
+  --ink: #1a1814;
+  --ink-mid: #3d3a35;
+  --muted: #7a7670;
+  --faint: #b8b4ae;
+  --rule: #e8e4de;
+  --accent: #c0392b;
+  --gold: #f5c518;
+  --green-bg: #edf7f1; --green-text: #1a7a45; --green-border: #a8dfc0;
+  --yellow-bg: #fdf6e3; --yellow-text: #8a6a00; --yellow-border: #f0d080;
+  --red-bg: #fdf0ee; --red-text: #b03020; --red-border: #f0b8b0;
+  --head: 'Syne', sans-serif;
+  --serif: 'Lora', Georgia, serif;
+  --body: 'Inter', sans-serif;
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--body); background: var(--bg); color: var(--ink); font-size: 15px; line-height: 1.6; min-height: 100vh; }
+
+/* ── HEADER ── */
+header { background: rgba(26,24,20,0.96); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.07); position: sticky; top: 0; z-index: 100; }
+.header-inner { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+.logo { font-family: var(--head); font-size: 1.2rem; font-weight: 800; color: #f0eeeb; text-decoration: none; letter-spacing: -0.02em; }
+.logo-oz { color: var(--gold); }
+.header-back { display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: rgba(240,238,235,0.5); text-decoration: none; transition: color 0.15s; }
+.header-back:hover { color: #f0eeeb; }
+.header-back svg { width: 14px; height: 14px; }
+.btn-auth-sm { padding: 0.35rem 0.85rem; font-family: var(--body); font-size: 0.8rem; font-weight: 500; background: rgba(255,255,255,0.1); color: #f0eeeb; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; cursor: pointer; transition: background 0.15s; }
+.btn-auth-sm:hover { background: rgba(255,255,255,0.18); }
+
+/* ── HERO STRIP ── */
+.title-hero {
+  background: var(--ink);
+  color: #f0eeeb;
+  padding: 3rem 1.5rem 0;
+}
+.title-hero-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: auto 1fr; gap: 2.5rem;
+  align-items: end; padding-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.title-cover {
+  width: 160px; height: 240px; border-radius: 10px;
+  background: linear-gradient(135deg, #2a2520, #3a3028);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 4rem; flex-shrink: 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.title-cover.square { height: 160px; border-radius: 8px; }
+.title-breadcrumb { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+.title-breadcrumb a { color: var(--gold); text-decoration: none; }
+.title-breadcrumb span { color: rgba(245,197,24,0.4); }
+.title-name { font-family: var(--head); font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 0.6rem; }
+.title-tagline { font-family: var(--serif); font-size: 1rem; font-style: italic; color: rgba(240,238,235,0.55); margin-bottom: 1.25rem; line-height: 1.5; }
+.title-meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-size: 0.82rem; color: rgba(240,238,235,0.55); margin-bottom: 1.5rem; }
+.title-meta-row strong { color: #f0eeeb; font-weight: 500; }
+.title-genre-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.genre-tag { padding: 0.25rem 0.7rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; font-size: 0.72rem; font-weight: 500; color: rgba(240,238,235,0.7); }
+
+/* ── SCORE BAR ── */
+.score-bar {
+  background: var(--ink);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 0 1.5rem;
+}
+.score-bar-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: stretch; gap: 0;
+  padding: 1.5rem 0;
+}
+.score-block {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 0 2.5rem; gap: 0.4rem;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.score-block:first-child { padding-left: 0; }
+.score-block:last-child { border-right: none; }
+.score-badge {
+  display: flex; align-items: center; justify-content: center;
+  width: 64px; height: 64px; border-radius: 10px;
+  font-family: var(--head); font-size: 1.6rem; font-weight: 800;
+}
+.score-badge.green { background: #1a3d2b; color: #21d07a; }
+.score-badge.yellow { background: #3a3010; color: #f5c518; }
+.score-badge.red { background: #3a1414; color: #ff5f5f; }
+.score-badge.na { background: rgba(255,255,255,0.06); color: rgba(240,238,235,0.3); }
+.score-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(240,238,235,0.4); }
+.score-sublabel { font-size: 0.75rem; color: rgba(240,238,235,0.3); }
+.score-verdict { padding: 0 2.5rem; display: flex; flex-direction: column; justify-content: center; }
+.verdict-text { font-family: var(--serif); font-size: 1rem; font-style: italic; color: rgba(240,238,235,0.6); line-height: 1.5; max-width: 360px; }
+.verdict-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(240,238,235,0.3); margin-bottom: 0.4rem; }
+
+/* ── MAIN LAYOUT ── */
+.main-wrap { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem; display: grid; grid-template-columns: 1fr 320px; gap: 3rem; align-items: start; }
+
+/* ── SECTION HEADS ── */
+.section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--ink); }
+.section-title { font-family: var(--head); font-size: 0.9rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.section-count { font-size: 0.78rem; color: var(--muted); }
+
+/* ── CRITIC REVIEWS ── */
+.critic-review {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 0.75rem;
+  transition: border-color 0.15s;
+}
+.critic-review:hover { border-color: var(--faint); }
+.review-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 0.85rem; }
+.review-score-badge {
+  width: 46px; height: 46px; border-radius: 7px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--head); font-size: 1.05rem; font-weight: 800;
+}
+.review-score-badge.green { background: var(--green-bg); color: var(--green-text); border: 1px solid var(--green-border); }
+.review-score-badge.yellow { background: var(--yellow-bg); color: var(--yellow-text); border: 1px solid var(--yellow-border); }
+.review-score-badge.red { background: var(--red-bg); color: var(--red-text); border: 1px solid var(--red-border); }
+.review-score-badge.na { background: #f0eeeb; color: var(--muted); border: 1px solid var(--rule); }
+.review-meta { flex: 1; }
+.review-pub-name { font-size: 0.88rem; font-weight: 600; color: var(--ink); margin-bottom: 0.15rem; }
+.review-critic-name { font-size: 0.78rem; color: var(--muted); }
+.review-date { font-size: 0.72rem; color: var(--faint); margin-top: 0.1rem; }
+.review-snippet-text {
+  font-family: var(--serif); font-size: 0.95rem; line-height: 1.7;
+  color: var(--ink-mid); font-style: italic;
+  border-left: 3px solid var(--rule); padding-left: 1rem;
+  margin-bottom: 0.85rem;
+}
+.review-link {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: 0.78rem; font-weight: 500; color: var(--accent);
+  text-decoration: none; transition: opacity 0.15s;
+}
+.review-link:hover { opacity: 0.75; }
+.review-link svg { width: 12px; height: 12px; }
+
+/* ── SCORE DISTRIBUTION ── */
+.dist-bar-wrap { margin-bottom: 1.5rem; }
+.dist-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem; }
+.dist-label { font-size: 0.75rem; color: var(--muted); width: 60px; text-align: right; flex-shrink: 0; }
+.dist-bar-bg { flex: 1; height: 8px; background: var(--rule); border-radius: 4px; overflow: hidden; }
+.dist-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.dist-bar-fill.green { background: #21d07a; }
+.dist-bar-fill.yellow { background: #f5c518; }
+.dist-bar-fill.red { background: #ff5f5f; }
+.dist-count { font-size: 0.72rem; color: var(--faint); width: 20px; flex-shrink: 0; }
+
+/* ── USER REVIEWS ── */
+.user-review { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 0.6rem; }
+.user-review-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; }
+.user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--rule); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+.user-name { font-size: 0.85rem; font-weight: 600; }
+.user-review-date { font-size: 0.72rem; color: var(--faint); }
+.user-score-pill { margin-left: auto; padding: 0.2rem 0.6rem; border-radius: 5px; font-family: var(--head); font-size: 0.8rem; font-weight: 700; flex-shrink: 0; }
+.user-score-pill.green { background: var(--green-bg); color: var(--green-text); }
+.user-score-pill.yellow { background: var(--yellow-bg); color: var(--yellow-text); }
+.user-score-pill.red { background: var(--red-bg); color: var(--red-text); }
+.user-review-body { font-size: 0.875rem; color: var(--ink-mid); line-height: 1.65; }
+
+/* ── REVIEW FORM ── */
+.review-form-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; }
+.review-form-card h4 { font-family: var(--head); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 1rem; }
+.score-picker { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.score-btn { width: 38px; height: 38px; border-radius: 6px; border: 1px solid var(--rule); background: var(--bg); color: var(--muted); font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: var(--body); }
+.score-btn:hover { border-color: var(--faint); color: var(--ink); }
+.score-btn.selected { background: var(--ink); color: #f0eeeb; border-color: var(--ink); }
+.review-textarea { width: 100%; background: var(--bg); border: 1px solid var(--rule); border-radius: 6px; padding: 0.65rem 0.85rem; color: var(--ink); font-family: var(--serif); font-size: 0.9rem; resize: vertical; min-height: 90px; outline: none; transition: border-color 0.2s; margin-bottom: 0.75rem; line-height: 1.6; }
+.review-textarea:focus { border-color: var(--faint); }
+.review-textarea::placeholder { color: var(--faint); font-style: italic; }
+.btn-submit { padding: 0.55rem 1.4rem; background: var(--ink); color: #f0eeeb; border: none; border-radius: 6px; font-family: var(--body); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: opacity 0.15s; }
+.btn-submit:hover { opacity: 0.8; }
+.btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── SIDEBAR ── */
+.sidebar-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.25rem; }
+.sidebar-card-title { font-family: var(--head); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--rule); }
+.info-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0.45rem 0; border-bottom: 1px solid var(--rule); font-size: 0.85rem; }
+.info-row:last-child { border-bottom: none; }
+.info-key { color: var(--muted); }
+.info-val { font-weight: 500; color: var(--ink); text-align: right; max-width: 180px; }
+
+/* ── RELATED TITLES ── */
+.related-item { display: flex; align-items: center; gap: 0.85rem; padding: 0.65rem 0; border-bottom: 1px solid var(--rule); cursor: pointer; transition: opacity 0.15s; text-decoration: none; color: inherit; }
+.related-item:hover { opacity: 0.7; }
+.related-item:last-child { border-bottom: none; }
+.related-thumb { width: 40px; height: 40px; border-radius: 5px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.related-info { flex: 1; min-width: 0; }
+.related-title { font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.related-sub { font-size: 0.72rem; color: var(--muted); }
+.related-score { font-family: var(--head); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+.related-score.green { color: var(--green-text); }
+.related-score.yellow { color: var(--yellow-text); }
+.related-score.na { color: var(--faint); }
+
+/* ── LOADING ── */
+.skeleton { background: linear-gradient(90deg, var(--rule) 25%, #ede9e3 50%, var(--rule) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 6px; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.skeleton-review { height: 130px; border-radius: 10px; margin-bottom: 0.75rem; }
+
+/* ── AUTH MODAL ── */
+.modal-overlay { display: none; position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 1.5rem; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; width: 100%; max-width: 400px; padding: 2rem; position: relative; }
+.modal-close { position: absolute; top: 1rem; right: 1rem; background: var(--bg); border: 1px solid var(--rule); border-radius: 6px; width: 28px; height: 28px; cursor: pointer; color: var(--muted); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+.modal-close:hover { color: var(--ink); }
+.modal-title { font-family: var(--head); font-size: 1.2rem; font-weight: 800; margin-bottom: 1.5rem; }
+.tabs { display: flex; gap: 0.25rem; margin-bottom: 1.25rem; }
+.tab { padding: 0.4rem 1rem; font-family: var(--body); font-size: 0.8rem; font-weight: 500; color: var(--muted); background: none; border: 1px solid transparent; border-radius: 6px; cursor: pointer; transition: all 0.15s; }
+.tab:hover { color: var(--ink); border-color: var(--rule); }
+.tab.active { color: var(--ink); background: var(--bg); border-color: var(--rule); }
+.input-group { margin-bottom: 0.85rem; }
+.input-group label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.35rem; }
+.auth-input { width: 100%; background: var(--bg); border: 1px solid var(--rule); border-radius: 6px; padding: 0.6rem 0.85rem; color: var(--ink); font-family: var(--body); font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+.auth-input:focus { border-color: var(--faint); }
+.auth-error { font-size: 0.8rem; color: var(--accent); margin-bottom: 0.75rem; display: none; }
+.auth-error.show { display: block; }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--ink); color: #f0eeeb; border-radius: 8px; padding: 0.75rem 1.25rem; font-size: 0.85rem; z-index: 999; transform: translateY(6px); opacity: 0; transition: all 0.25s; pointer-events: none; }
+.toast.show { opacity: 1; transform: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) { .main-wrap { grid-template-columns: 1fr; } .title-hero-inner { grid-template-columns: 1fr; } .title-cover { width: 120px; height: 180px; } .score-bar-inner { flex-wrap: wrap; gap: 1rem; } .score-block { border-right: none; padding: 0; } }
+@media (max-width: 500px) { .title-name { font-size: 1.6rem; } }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.title-hero-inner { animation: fadeIn 0.4s ease both; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo"><span class="logo-oz">Oz</span>Critic</a>
+    <a href="index.html" class="header-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back to home
+    </a>
+    <button class="btn-auth-sm" id="auth-btn" onclick="openAuthModal()">Sign In</button>
+  </div>
+</header>
+
+<!-- TITLE HERO -->
+<section class="title-hero">
+  <div class="title-hero-inner" id="title-hero-inner">
+    <div class="title-cover" id="title-cover">🎬</div>
+    <div>
+      <div class="title-breadcrumb" id="title-breadcrumb">
+        <a href="index.html">Home</a><span>/</span><span id="bc-type">Film</span>
+      </div>
+      <h1 class="title-name" id="title-name">Loading…</h1>
+      <p class="title-tagline" id="title-tagline"></p>
+      <div class="title-meta-row" id="title-meta-row"></div>
+      <div class="title-genre-tags" id="title-genre-tags"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCORE BAR -->
+<div class="score-bar">
+  <div class="score-bar-inner">
+    <div class="score-block">
+      <div class="score-label">Critic Score</div>
+      <div class="score-badge na" id="critic-score-badge">NR</div>
+      <div class="score-sublabel" id="critic-score-sub">0 reviews</div>
+    </div>
+    <div class="score-block">
+      <div class="score-label">User Score</div>
+      <div class="score-badge na" id="user-score-badge">NR</div>
+      <div class="score-sublabel" id="user-score-sub">0 ratings</div>
+    </div>
+    <div class="score-block">
+      <div class="score-label">Verdict</div>
+      <div class="score-sublabel" id="verdict-word" style="font-size:0.95rem;font-weight:600;color:rgba(240,238,235,0.7)">—</div>
+    </div>
+    <div class="score-verdict">
+      <div class="verdict-label">About this score</div>
+      <div class="verdict-text">The OzCritic score is a weighted average of reviews from verified Australian publications. Each critic counts equally.</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-wrap">
+
+  <!-- LEFT: REVIEWS -->
+  <div>
+    <!-- CRITIC REVIEWS -->
+    <div style="margin-bottom:2.5rem">
+      <div class="section-head">
+        <div class="section-title">Critic Reviews</div>
+        <div class="section-count" id="critic-count">0 reviews</div>
+      </div>
+
+      <!-- SCORE DISTRIBUTION -->
+      <div class="dist-bar-wrap" id="dist-bar-wrap" style="display:none">
+        <div class="dist-row">
+          <div class="dist-label">Positive</div>
+          <div class="dist-bar-bg"><div class="dist-bar-fill green" id="dist-green" style="width:0%"></div></div>
+          <div class="dist-count" id="dist-green-n">0</div>
+        </div>
+        <div class="dist-row">
+          <div class="dist-label">Mixed</div>
+          <div class="dist-bar-bg"><div class="dist-bar-fill yellow" id="dist-yellow" style="width:0%"></div></div>
+          <div class="dist-count" id="dist-yellow-n">0</div>
+        </div>
+        <div class="dist-row">
+          <div class="dist-label">Negative</div>
+          <div class="dist-bar-bg"><div class="dist-bar-fill red" id="dist-red" style="width:0%"></div></div>
+          <div class="dist-count" id="dist-red-n">0</div>
+        </div>
+      </div>
+
+      <div id="critic-reviews-list">
+        <div class="skeleton skeleton-review"></div>
+        <div class="skeleton skeleton-review"></div>
+        <div class="skeleton skeleton-review"></div>
+      </div>
+    </div>
+
+    <!-- USER REVIEWS -->
+    <div>
+      <div class="section-head">
+        <div class="section-title">User Reviews</div>
+        <div class="section-count" id="user-count">0 reviews</div>
+      </div>
+
+      <!-- SUBMIT FORM -->
+      <div id="review-form-wrap"></div>
+
+      <div id="user-reviews-list">
+        <p style="color:var(--muted);font-size:0.875rem;padding:1rem 0">No user reviews yet. Be the first!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: SIDEBAR -->
+  <aside>
+
+    <!-- TITLE INFO -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">Title Info</div>
+      <div id="title-info-rows">
+        <div class="skeleton" style="height:20px;margin-bottom:8px"></div>
+        <div class="skeleton" style="height:20px;margin-bottom:8px"></div>
+        <div class="skeleton" style="height:20px"></div>
+      </div>
+    </div>
+
+    <!-- PUBLICATIONS -->
+    <div class="sidebar-card" id="pubs-card" style="display:none">
+      <div class="sidebar-card-title">Publications Reviewed</div>
+      <div id="pubs-list"></div>
+    </div>
+
+    <!-- RELATED TITLES -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">More Australian Titles</div>
+      <div id="related-list">
+        <div class="skeleton" style="height:50px;margin-bottom:8px;border-radius:8px"></div>
+        <div class="skeleton" style="height:50px;margin-bottom:8px;border-radius:8px"></div>
+        <div class="skeleton" style="height:50px;border-radius:8px"></div>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuthModal()">✕</button>
+    <div class="modal-title">Join OzCritic</div>
+    <div class="tabs">
+      <button class="tab active" id="tab-signin" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="tab" id="tab-signup" onclick="switchAuthTab('signup')">Create Account</button>
+    </div>
+    <div id="auth-error" class="auth-error"></div>
+    <div id="signup-username" style="display:none" class="input-group">
+      <label>Username</label>
+      <input type="text" class="auth-input" id="input-username" placeholder="your_username">
+    </div>
+    <div class="input-group">
+      <label>Email</label>
+      <input type="email" class="auth-input" id="input-email" placeholder="you@example.com">
+    </div>
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" class="auth-input" id="input-password" placeholder="••••••••">
+    </div>
+    <button class="btn-submit" style="width:100%;padding:.65rem" id="auth-submit-btn" onclick="submitAuth()">Sign In</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════
+// CONFIG — same keys as index.html
+// ═══════════════════════════════════════════════════
+const SUPABASE_URL = 'https://yihfguemdljvnzqjsbsl.supabase.co'
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpaGZndWVtZGxqdm56cWpzYnNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NjY1MTIsImV4cCI6MjA4OTM0MjUxMn0.n9zF9sShZgHhCvIe1RSklqSaYqzGEYBGira_f2_MRps'
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
+
+// ── STATE ──────────────────────────────────────────
+let currentUser = null
+let currentTitle = null
+let selectedScore = null
+let authMode = 'signin'
+
+// ── GET SLUG FROM URL ──────────────────────────────
+function getSlug() {
+  const params = new URLSearchParams(window.location.search)
+  return params.get('slug')
+}
+
+// ── HELPERS ────────────────────────────────────────
+function scoreClass(n) {
+  if (n == null) return 'na'
+  if (n >= 61) return 'green'
+  if (n >= 40) return 'yellow'
+  return 'red'
+}
+
+function userScoreClass(n) {
+  if (n == null) return 'na'
+  if (n >= 7) return 'green'
+  if (n >= 5) return 'yellow'
+  return 'red'
+}
+
+function verdict(n) {
+  if (n == null) return '—'
+  if (n >= 81) return 'Universal Acclaim'
+  if (n >= 61) return 'Generally Favourable'
+  if (n >= 40) return 'Mixed Reviews'
+  return 'Generally Unfavourable'
+}
+
+function typeLabel(t) {
+  return {film:'Film',tv:'TV Series',album:'Album',ep:'EP',single:'Single'}[t] || t
+}
+
+function formatDate(d) {
+  if (!d) return '—'
+  return new Date(d).toLocaleDateString('en-AU', {day:'numeric',month:'long',year:'numeric'})
+}
+
+function toast(msg, ms = 3000) {
+  const el = document.getElementById('toast')
+  el.textContent = msg
+  el.classList.add('show')
+  setTimeout(() => el.classList.remove('show'), ms)
+}
+
+// ── LOAD TITLE ─────────────────────────────────────
+async function loadTitle(slug) {
+  const { data: t, error } = await sb.from('titles').select(`
+    *,
+    critic_reviews (
+      id, score, snippet, full_review_url, reviewed_at,
+      critics (
+        name, slug,
+        publications ( name, slug, website )
+      )
+    )
+  `).eq('slug', slug).single()
+
+  if (error || !t) {
+    document.getElementById('title-name').textContent = 'Title not found'
+    return
+  }
+
+  currentTitle = t
+  document.title = `${t.title} — OzCritic`
+
+  // Cover
+  const cover = document.getElementById('title-cover')
+  cover.textContent = ['album','ep','single'].includes(t.type) ? '🎵' : '🎬'
+  if (['album','ep','single'].includes(t.type)) cover.classList.add('square')
+
+  // Breadcrumb
+  document.getElementById('bc-type').textContent = typeLabel(t.type)
+
+  // Name & tagline
+  document.getElementById('title-name').textContent = t.title
+  if (t.description) {
+    // Use first sentence as tagline
+    const firstSentence = t.description.split('.')[0] + '.'
+    document.getElementById('title-tagline').textContent = firstSentence
+  }
+
+  // Meta row
+  const metaItems = []
+  if (t.creator) metaItems.push(`<span>${['album','ep','single'].includes(t.type) ? 'Artist' : 'Director'}: <strong>${t.creator}</strong></span>`)
+  if (t.release_date) metaItems.push(`<span>Released: <strong>${formatDate(t.release_date)}</strong></span>`)
+  if (t.runtime_mins) metaItems.push(`<span>Runtime: <strong>${t.runtime_mins} mins</strong></span>`)
+  if (t.label) metaItems.push(`<span>Label: <strong>${t.label}</strong></span>`)
+  if (t.season_count) metaItems.push(`<span>Seasons: <strong>${t.season_count}</strong></span>`)
+  document.getElementById('title-meta-row').innerHTML = metaItems.join('')
+
+  // Genre tags
+  if (t.genre?.length) {
+    document.getElementById('title-genre-tags').innerHTML =
+      t.genre.map(g => `<span class="genre-tag">${g}</span>`).join('')
+  }
+
+  // Scores
+  const cs = t.critic_score
+  const csEl = document.getElementById('critic-score-badge')
+  csEl.textContent = cs ?? 'NR'
+  csEl.className = `score-badge ${scoreClass(cs)}`
+  document.getElementById('critic-score-sub').textContent = `${t.review_count || 0} reviews`
+
+  const us = t.user_score
+  const usEl = document.getElementById('user-score-badge')
+  usEl.textContent = us ?? 'NR'
+  usEl.className = `score-badge ${userScoreClass(us ? parseFloat(us) * 10 : null)}`
+  document.getElementById('user-score-sub').textContent = `${t.user_review_count || 0} ratings`
+
+  document.getElementById('verdict-word').textContent = verdict(cs)
+
+  // Critic reviews
+  renderCriticReviews(t.critic_reviews || [])
+
+  // Sidebar info
+  renderSidebarInfo(t)
+
+  // Publications sidebar
+  renderPublications(t.critic_reviews || [])
+}
+
+function renderCriticReviews(reviews) {
+  const list = document.getElementById('critic-reviews-list')
+  const sorted = [...reviews].sort((a,b) => (b.score||0) - (a.score||0))
+
+  document.getElementById('critic-count').textContent = `${sorted.length} review${sorted.length !== 1 ? 's' : ''}`
+
+  if (!sorted.length) {
+    list.innerHTML = `<p style="color:var(--muted);font-size:0.875rem;padding:1rem 0">No critic reviews yet.</p>`
+    return
+  }
+
+  // Distribution
+  const pos = sorted.filter(r => r.score >= 61).length
+  const mix = sorted.filter(r => r.score >= 40 && r.score < 61).length
+  const neg = sorted.filter(r => r.score < 40 && r.score != null).length
+  const total = sorted.length
+  document.getElementById('dist-bar-wrap').style.display = ''
+  document.getElementById('dist-green').style.width = `${(pos/total)*100}%`
+  document.getElementById('dist-yellow').style.width = `${(mix/total)*100}%`
+  document.getElementById('dist-red').style.width = `${(neg/total)*100}%`
+  document.getElementById('dist-green-n').textContent = pos
+  document.getElementById('dist-yellow-n').textContent = mix
+  document.getElementById('dist-red-n').textContent = neg
+
+  list.innerHTML = sorted.map(r => {
+    const cls = scoreClass(r.score)
+    const pub = r.critics?.publications?.name || '—'
+    const critic = r.critics?.name || ''
+    const pubUrl = r.critics?.publications?.website || null
+    const hasLink = !!r.full_review_url
+
+    return `
+      <div class="critic-review">
+        <div class="review-header">
+          <div class="review-score-badge ${cls}">${r.score ?? 'NR'}</div>
+          <div class="review-meta">
+            <div class="review-pub-name">${pubUrl ? `<a href="${pubUrl}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${pub}</a>` : pub}</div>
+            <div class="review-critic-name">${critic}</div>
+            ${r.reviewed_at ? `<div class="review-date">${formatDate(r.reviewed_at)}</div>` : ''}
+          </div>
+        </div>
+        ${r.snippet ? `<div class="review-snippet-text">"${r.snippet}"</div>` : ''}
+        ${hasLink ? `
+          <a href="${r.full_review_url}" target="_blank" rel="noopener" class="review-link">
+            Read full review
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>` : `<span style="font-size:0.75rem;color:var(--faint)">No link available</span>`}
+      </div>`
+  }).join('')
+}
+
+function renderSidebarInfo(t) {
+  const rows = []
+  rows.push(['Type', typeLabel(t.type)])
+  if (t.creator) rows.push([['album','ep','single'].includes(t.type) ? 'Artist' : 'Director', t.creator])
+  if (t.release_date) rows.push(['Released', formatDate(t.release_date)])
+  if (t.runtime_mins) rows.push(['Runtime', `${t.runtime_mins} minutes`])
+  if (t.label) rows.push(['Label', t.label])
+  if (t.season_count) rows.push(['Seasons', t.season_count])
+  if (t.genre?.length) rows.push(['Genre', t.genre.join(', ')])
+
+  document.getElementById('title-info-rows').innerHTML = rows.map(([k,v]) => `
+    <div class="info-row">
+      <span class="info-key">${k}</span>
+      <span class="info-val">${v}</span>
+    </div>`).join('')
+}
+
+function renderPublications(reviews) {
+  if (!reviews.length) return
+  const pubs = [...new Set(reviews.map(r => r.critics?.publications?.name).filter(Boolean))]
+  if (!pubs.length) return
+  document.getElementById('pubs-card').style.display = ''
+  document.getElementById('pubs-list').innerHTML = pubs.map(p => `
+    <div style="font-size:0.82rem;padding:0.4rem 0;border-bottom:1px solid var(--rule);color:var(--ink-mid)">${p}</div>
+  `).join('')
+}
+
+// ── LOAD USER REVIEWS ──────────────────────────────
+async function loadUserReviews(titleId) {
+  const { data, error } = await sb.from('user_reviews').select(`
+    id, score, body, created_at,
+    profiles ( username, display_name )
+  `).eq('title_id', titleId).order('created_at', {ascending:false}).limit(20)
+
+  const list = document.getElementById('user-reviews-list')
+  document.getElementById('user-count').textContent = `${data?.length || 0} review${data?.length !== 1 ? 's' : ''}`
+
+  if (!data?.length) {
+    list.innerHTML = `<p style="color:var(--muted);font-size:0.875rem;padding:1rem 0">No user reviews yet. Be the first!</p>`
+    return
+  }
+
+  list.innerHTML = data.map(r => {
+    const name = r.profiles?.display_name || r.profiles?.username || 'Anonymous'
+    const initials = name.slice(0,2).toUpperCase()
+    const cls = userScoreClass(r.score * 10)
+    return `
+      <div class="user-review">
+        <div class="user-review-header">
+          <div class="user-avatar">${initials}</div>
+          <div class="user-info">
+            <div class="user-name">${name}</div>
+            <div class="user-review-date">${formatDate(r.created_at?.slice(0,10))}</div>
+          </div>
+          <div class="user-score-pill ${cls}">${r.score}/10</div>
+        </div>
+        ${r.body ? `<div class="user-review-body">${r.body}</div>` : ''}
+      </div>`
+  }).join('')
+}
+
+// ── LOAD RELATED ───────────────────────────────────
+async function loadRelated(type, currentSlug) {
+  const { data } = await sb.from('titles')
+    .select('slug, title, type, creator, critic_score')
+    .eq('type', type)
+    .neq('slug', currentSlug)
+    .order('critic_score', {ascending:false, nullsFirst:false})
+    .limit(5)
+
+  const list = document.getElementById('related-list')
+  if (!data?.length) { list.innerHTML = '<p style="font-size:0.82rem;color:var(--muted)">None yet.</p>'; return }
+
+  list.innerHTML = data.map(t => {
+    const cls = scoreClass(t.critic_score)
+    return `
+      <a class="related-item" href="title.html?slug=${t.slug}">
+        <div class="related-thumb">${['album','ep','single'].includes(t.type)?'🎵':'🎬'}</div>
+        <div class="related-info">
+          <div class="related-title">${t.title}</div>
+          <div class="related-sub">${t.creator || typeLabel(t.type)}</div>
+        </div>
+        <div class="related-score ${cls}">${t.critic_score ?? 'NR'}</div>
+      </a>`
+  }).join('')
+}
+
+// ── REVIEW FORM ────────────────────────────────────
+function renderReviewForm(titleId) {
+  const wrap = document.getElementById('review-form-wrap')
+  if (!currentUser) {
+    wrap.innerHTML = `
+      <div style="background:#f7f5f2;border:1px solid var(--rule);border-radius:10px;padding:1.25rem;text-align:center;margin-bottom:1.5rem">
+        <p style="font-size:0.875rem;color:var(--muted);margin-bottom:0.75rem">Sign in to leave a review</p>
+        <button class="btn-submit" onclick="openAuthModal()">Sign In</button>
+      </div>`
+    return
+  }
+  wrap.innerHTML = `
+    <div class="review-form-card">
+      <h4>Your Review</h4>
+      <div class="score-picker">
+        ${[1,2,3,4,5,6,7,8,9,10].map(n =>
+          `<button class="score-btn" onclick="selectScore(${n},this)">${n}</button>`
+        ).join('')}
+      </div>
+      <textarea class="review-textarea" id="review-body" placeholder="Share your thoughts… (optional)"></textarea>
+      <button class="btn-submit" id="review-submit-btn" onclick="submitReview('${titleId}')">Submit Review</button>
+    </div>`
+}
+
+function selectScore(n, btn) {
+  selectedScore = n
+  document.querySelectorAll('.score-btn').forEach(b => b.classList.remove('selected'))
+  btn.classList.add('selected')
+}
+
+async function submitReview(titleId) {
+  if (!selectedScore) { toast('Please select a score 1–10'); return }
+  const btn = document.getElementById('review-submit-btn')
+  const body = document.getElementById('review-body')?.value
+  btn.disabled = true; btn.textContent = 'Submitting…'
+  try {
+    const { error } = await sb.from('user_reviews').upsert({
+      title_id: titleId,
+      user_id: currentUser.id,
+      score: selectedScore,
+      body: body || null
+    }, { onConflict: 'title_id,user_id' })
+    if (error) throw error
+    toast('Review submitted! ✓')
+    btn.textContent = 'Submitted ✓'
+    selectedScore = null
+    await loadUserReviews(titleId)
+  } catch(e) {
+    toast('Error: ' + e.message)
+    btn.disabled = false; btn.textContent = 'Submit Review'
+  }
+}
+
+// ── AUTH ───────────────────────────────────────────
+function openAuthModal() {
+  document.getElementById('auth-modal').classList.add('open')
+  document.body.style.overflow = 'hidden'
+}
+function closeAuthModal() {
+  document.getElementById('auth-modal').classList.remove('open')
+  document.body.style.overflow = ''
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('auth-modal')) closeAuthModal()
+}
+
+function switchAuthTab(mode) {
+  authMode = mode
+  document.getElementById('tab-signin').classList.toggle('active', mode==='signin')
+  document.getElementById('tab-signup').classList.toggle('active', mode==='signup')
+  document.getElementById('signup-username').style.display = mode==='signup' ? '' : 'none'
+  document.getElementById('auth-submit-btn').textContent = mode==='signin' ? 'Sign In' : 'Create Account'
+  document.getElementById('auth-error').classList.remove('show')
+}
+
+async function submitAuth() {
+  const email = document.getElementById('input-email').value.trim()
+  const password = document.getElementById('input-password').value
+  const errEl = document.getElementById('auth-error')
+  const btn = document.getElementById('auth-submit-btn')
+  errEl.classList.remove('show')
+  btn.disabled = true; btn.textContent = 'Please wait…'
+  try {
+    if (authMode === 'signup') {
+      const username = document.getElementById('input-username').value.trim()
+      if (!username) throw new Error('Username is required')
+      const { data, error } = await sb.auth.signUp({email, password})
+      if (error) throw error
+      if (data.user) await sb.from('profiles').insert({id:data.user.id,username,display_name:username})
+      toast('Account created! Check your email to verify.')
+      closeAuthModal()
+    } else {
+      const { data, error } = await sb.auth.signInWithPassword({email, password})
+      if (error) throw error
+      currentUser = data.user
+      updateAuthUI()
+      closeAuthModal()
+      toast('Welcome back!')
+      if (currentTitle) renderReviewForm(currentTitle.id)
+    }
+  } catch(e) {
+    errEl.textContent = e.message; errEl.classList.add('show')
+  }
+  btn.disabled = false
+  btn.textContent = authMode==='signin' ? 'Sign In' : 'Create Account'
+}
+
+function updateAuthUI() {
+  const btn = document.getElementById('auth-btn')
+  if (currentUser) {
+    btn.textContent = 'Sign Out'
+    btn.onclick = async () => {
+      await sb.auth.signOut()
+      currentUser = null
+      updateAuthUI()
+      if (currentTitle) renderReviewForm(currentTitle.id)
+      toast('Signed out.')
+    }
+  } else {
+    btn.textContent = 'Sign In'
+    btn.onclick = openAuthModal
+  }
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuthModal() })
+
+// ── INIT ───────────────────────────────────────────
+async function init() {
+  const slug = getSlug()
+  if (!slug) {
+    document.getElementById('title-name').textContent = 'No title specified'
+    return
+  }
+
+  const { data: { session } } = await sb.auth.getSession()
+  if (session?.user) { currentUser = session.user; updateAuthUI() }
+  sb.auth.onAuthStateChange((_, s) => { currentUser = s?.user || null; updateAuthUI() })
+
+  await loadTitle(slug)
+
+  if (currentTitle) {
+    await Promise.all([
+      loadUserReviews(currentTitle.id),
+      loadRelated(currentTitle.type, slug),
+    ])
+    renderReviewForm(currentTitle.id)
+  }
+}
+
+init()
+</script>
+</body>
+</html>
