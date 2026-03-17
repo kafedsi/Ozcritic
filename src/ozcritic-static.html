@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OzCritic — Australian Film, TV & Music Reviews</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0d0f10;
+  --surface:   #161a1c;
+  --surface2:  #1e2326;
+  --border:    rgba(255,255,255,0.07);
+  --border2:   rgba(255,255,255,0.12);
+  --text:      #f0eeeb;
+  --muted:     #8a8f94;
+  --faint:     #4a4f54;
+  --gold:      #f5c518;
+  --green:     #21d07a;
+  --yellow:    #f5c518;
+  --red:       #ff5f5f;
+  --orange:    #ff9a3c;
+  --teal:      #00b4d8;
+  --head:      'Syne', sans-serif;
+  --body:      'Inter', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: var(--body); background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; min-height: 100vh; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--faint); border-radius: 3px; }
+
+/* ── SCORE BADGE ── */
+.score {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 48px; height: 48px; border-radius: 6px;
+  font-family: var(--head); font-size: 1.1rem; font-weight: 700;
+  flex-shrink: 0;
+}
+.score.lg { width: 62px; height: 62px; font-size: 1.45rem; border-radius: 8px; }
+.score.sm { width: 36px; height: 36px; font-size: 0.85rem; border-radius: 5px; }
+.score-green  { background: #1a3d2b; color: var(--green); }
+.score-yellow { background: #3a3010; color: var(--yellow); }
+.score-red    { background: #3a1414; color: var(--red); }
+.score-na     { background: var(--surface2); color: var(--muted); }
+
+/* ── HEADER ── */
+header {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(13,15,16,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.header-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 60px;
+  display: flex; align-items: center; gap: 2rem;
+}
+.logo {
+  font-family: var(--head); font-size: 1.35rem; font-weight: 800;
+  color: var(--text); text-decoration: none; letter-spacing: -0.02em;
+  display: flex; align-items: center; gap: 2px;
+  white-space: nowrap;
+}
+.logo-oz { color: var(--gold); }
+.logo-dot { color: var(--muted); font-weight: 400; }
+
+.header-nav { display: flex; gap: 0.25rem; flex: 1; }
+.nav-btn {
+  padding: 0.4rem 0.9rem;
+  font-family: var(--body); font-size: 0.82rem; font-weight: 500;
+  color: var(--muted); background: none; border: none; border-radius: 6px;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.nav-btn:hover { color: var(--text); background: var(--surface2); }
+.nav-btn.active { color: var(--text); background: var(--surface2); }
+
+.header-right { display: flex; align-items: center; gap: 0.75rem; margin-left: auto; }
+
+.search-bar {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 0.4rem 0.8rem;
+  transition: border-color 0.2s;
+}
+.search-bar:focus-within { border-color: rgba(255,255,255,0.25); }
+.search-bar svg { width: 14px; height: 14px; color: var(--muted); flex-shrink: 0; }
+.search-bar input {
+  background: none; border: none; outline: none;
+  font-family: var(--body); font-size: 0.82rem; color: var(--text);
+  width: 160px;
+}
+.search-bar input::placeholder { color: var(--faint); }
+
+.btn-signin {
+  padding: 0.4rem 1rem;
+  font-family: var(--body); font-size: 0.82rem; font-weight: 500;
+  color: var(--bg); background: var(--text);
+  border: none; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;
+}
+.btn-signin:hover { opacity: 0.85; }
+
+/* ── HERO BANNER ── */
+.hero-banner {
+  background: linear-gradient(135deg, #0d1520 0%, #0d1218 50%, #100d15 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 3.5rem 1.5rem;
+  position: relative; overflow: hidden;
+}
+.hero-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(245,197,24,0.06) 0%, transparent 60%),
+              radial-gradient(ellipse at 20% 80%, rgba(0,180,216,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+.hero-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 340px; gap: 3rem; align-items: center;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 1rem;
+}
+.hero-eyebrow::before {
+  content: ''; width: 20px; height: 2px; background: var(--gold); border-radius: 1px;
+}
+.hero h1 {
+  font-family: var(--head); font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800; line-height: 1.1; letter-spacing: -0.03em;
+  margin-bottom: 0.75rem;
+}
+.hero h1 em { font-style: italic; color: var(--gold); font-weight: 400; }
+.hero-sub {
+  font-size: 0.95rem; color: var(--muted); line-height: 1.7;
+  max-width: 480px; margin-bottom: 1.75rem;
+}
+.hero-stats {
+  display: flex; gap: 2rem;
+}
+.stat-num {
+  font-family: var(--head); font-size: 1.6rem; font-weight: 700;
+  color: var(--text); line-height: 1;
+}
+.stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+
+/* Featured card in hero */
+.hero-featured {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.feat-thumb {
+  width: 100%; aspect-ratio: 16/9;
+  background: linear-gradient(135deg, #1a2535, #2a1a35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3rem; position: relative;
+}
+.feat-thumb-label {
+  position: absolute; top: 10px; left: 10px;
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  background: var(--gold); color: #000;
+  padding: 3px 8px; border-radius: 4px;
+}
+.feat-body { padding: 1.1rem 1.25rem 1.25rem; }
+.feat-meta { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; }
+.feat-cat { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal); }
+.feat-year { font-size: 0.75rem; color: var(--muted); }
+.feat-title {
+  font-family: var(--head); font-size: 1.1rem; font-weight: 700;
+  line-height: 1.25; margin-bottom: 0.75rem;
+}
+.feat-row { display: flex; align-items: center; justify-content: space-between; }
+.feat-reviews { font-size: 0.78rem; color: var(--muted); }
+.feat-reviews span { color: var(--text); font-weight: 500; }
+
+/* ── SECTION LAYOUT ── */
+.section-wrap { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+.section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.section-title {
+  font-family: var(--head); font-size: 1.1rem; font-weight: 700;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.section-title::before {
+  content: ''; width: 3px; height: 18px;
+  background: var(--gold); border-radius: 2px; display: inline-block;
+}
+.see-all {
+  font-size: 0.78rem; color: var(--muted); text-decoration: none;
+  display: flex; align-items: center; gap: 0.3rem; transition: color 0.15s;
+}
+.see-all:hover { color: var(--text); }
+.see-all svg { width: 12px; height: 12px; }
+
+/* ── TABS ── */
+.tabs { display: flex; gap: 0.25rem; margin-bottom: 1.5rem; }
+.tab {
+  padding: 0.4rem 1rem;
+  font-family: var(--body); font-size: 0.8rem; font-weight: 500;
+  color: var(--muted); background: none;
+  border: 1px solid transparent; border-radius: 6px;
+  cursor: pointer; transition: all 0.15s;
+}
+.tab:hover { color: var(--text); border-color: var(--border2); }
+.tab.active { color: var(--text); background: var(--surface2); border-color: var(--border2); }
+
+/* ── CARD GRID ── */
+.card-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem;
+}
+.card-grid.four { grid-template-columns: repeat(4, 1fr); }
+
+.media-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden;
+  cursor: pointer; transition: border-color 0.15s, transform 0.15s;
+}
+.media-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+.card-thumb {
+  width: 100%; aspect-ratio: 2/3;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem; position: relative;
+}
+.card-thumb.square { aspect-ratio: 1/1; }
+
+.card-body { padding: 0.75rem; }
+.card-title-text {
+  font-family: var(--head); font-size: 0.82rem; font-weight: 700;
+  line-height: 1.3; margin-bottom: 0.25rem;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.card-meta { font-size: 0.72rem; color: var(--muted); margin-bottom: 0.6rem; }
+.card-score-row { display: flex; align-items: center; justify-content: space-between; }
+.user-score { font-size: 0.72rem; color: var(--muted); text-align: right; }
+.user-score strong { display: block; font-size: 0.85rem; color: var(--text); font-weight: 600; }
+
+/* ── LIST VIEW (New Releases) ── */
+.list-item {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: opacity 0.15s;
+}
+.list-item:hover { opacity: 0.8; }
+.list-item:last-child { border-bottom: none; }
+.list-thumb {
+  width: 52px; height: 52px; border-radius: 6px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+}
+.list-info { flex: 1; min-width: 0; }
+.list-title {
+  font-family: var(--head); font-size: 0.9rem; font-weight: 700;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.list-sub { font-size: 0.76rem; color: var(--muted); margin-top: 0.15rem; }
+.list-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem; flex-shrink: 0; }
+.review-count { font-size: 0.7rem; color: var(--faint); }
+
+/* ── 2-COL SECTION ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+/* ── GENRE CHIPS ── */
+.genre-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+.chip {
+  padding: 0.3rem 0.8rem;
+  font-size: 0.75rem; font-weight: 500;
+  background: var(--surface2); color: var(--muted);
+  border: 1px solid var(--border); border-radius: 999px;
+  cursor: pointer; transition: all 0.15s;
+}
+.chip:hover { color: var(--text); border-color: var(--border2); }
+.chip.active { color: #000; background: var(--gold); border-color: var(--gold); }
+
+/* ── TOP CRITICS ── */
+.critic-row {
+  display: flex; align-items: center; gap: 0.85rem;
+  padding: 0.75rem 0; border-bottom: 1px solid var(--border);
+}
+.critic-row:last-child { border-bottom: none; }
+.critic-avatar {
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 700;
+}
+.critic-info { flex: 1; }
+.critic-name { font-size: 0.88rem; font-weight: 600; }
+.critic-pub { font-size: 0.75rem; color: var(--muted); }
+.critic-count { font-size: 0.75rem; color: var(--faint); white-space: nowrap; }
+
+/* ── SCORE EXPLAINER ── */
+.score-guide {
+  display: flex; gap: 0.75rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+.guide-item { display: flex; align-items: center; gap: 0.5rem; }
+.guide-swatch { width: 28px; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; flex-shrink: 0; }
+.guide-text { font-size: 0.73rem; color: var(--muted); }
+.guide-text strong { display: block; color: var(--text); font-size: 0.78rem; }
+
+/* ── DIVIDER ── */
+.divider { border: none; border-top: 1px solid var(--border); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--surface); border-top: 1px solid var(--border);
+  padding: 3rem 1.5rem 2rem; margin-top: 3rem;
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem; border-bottom: 1px solid var(--border);
+}
+.footer-brand-logo {
+  font-family: var(--head); font-size: 1.2rem; font-weight: 800;
+  color: var(--text); margin-bottom: 0.75rem; display: block;
+}
+.footer-brand p { font-size: 0.82rem; color: var(--muted); line-height: 1.65; max-width: 220px; }
+.footer-col h5 { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin-bottom: 0.85rem; }
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 0.5rem; }
+.footer-col a { font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.15s; }
+.footer-col a:hover { color: var(--text); }
+.footer-bottom {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.75rem; color: var(--faint);
+}
+.aus-flag { display: inline-flex; align-items: center; gap: 0.4rem; }
+
+/* ── MODAL OVERLAY ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center; padding: 1.5rem;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 16px; width: 100%; max-width: 560px;
+  padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto;
+}
+.modal-close {
+  position: absolute; top: 1rem; right: 1rem;
+  background: var(--surface2); border: none; border-radius: 6px;
+  width: 30px; height: 30px; cursor: pointer; color: var(--muted);
+  display: flex; align-items: center; justify-content: center; font-size: 1rem;
+  transition: color 0.15s;
+}
+.modal-close:hover { color: var(--text); }
+.modal-thumb {
+  width: 80px; height: 80px; border-radius: 10px; float: left; margin: 0 1.25rem 1rem 0;
+  display: flex; align-items: center; justify-content: center; font-size: 2.5rem;
+}
+.modal-title { font-family: var(--head); font-size: 1.4rem; font-weight: 800; line-height: 1.2; }
+.modal-sub { font-size: 0.82rem; color: var(--muted); margin: 0.3rem 0 1rem; }
+.modal-scores { display: flex; gap: 1.5rem; margin: 1.25rem 0; clear: both; }
+.modal-score-block { text-align: center; }
+.modal-score-label { font-size: 0.7rem; color: var(--muted); margin-top: 0.4rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.modal-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.25rem; }
+.modal-reviews-title { font-family: var(--head); font-size: 0.9rem; font-weight: 700; margin-bottom: 0.75rem; }
+.review-snippet {
+  background: var(--surface2); border-radius: 8px; padding: 0.85rem 1rem;
+  margin-bottom: 0.6rem;
+}
+.review-snippet-score { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; }
+.review-pub { font-size: 0.78rem; font-weight: 600; color: var(--text); }
+.review-author-name { font-size: 0.72rem; color: var(--muted); }
+.review-text { font-size: 0.82rem; color: var(--muted); line-height: 1.6; font-style: italic; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1000px) {
+  .card-grid { grid-template-columns: repeat(4, 1fr); }
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-featured { max-width: 400px; }
+}
+@media (max-width: 768px) {
+  .card-grid { grid-template-columns: repeat(3, 1fr); }
+  .card-grid.four { grid-template-columns: repeat(2, 1fr); }
+  .two-col { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+  .header-nav .nav-btn:not(.active) { display: none; }
+  .search-bar { display: none; }
+}
+@media (max-width: 500px) {
+  .card-grid, .card-grid.four { grid-template-columns: repeat(2, 1fr); }
+  .footer-inner { grid-template-columns: 1fr; }
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.hero-inner { animation: fadeIn 0.5s ease both; }
+.card-grid .media-card { animation: fadeIn 0.4s ease both; }
+.card-grid .media-card:nth-child(2) { animation-delay: 0.05s; }
+.card-grid .media-card:nth-child(3) { animation-delay: 0.1s; }
+.card-grid .media-card:nth-child(4) { animation-delay: 0.15s; }
+.card-grid .media-card:nth-child(5) { animation-delay: 0.2s; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <span class="logo-oz">Oz</span>Critic<span class="logo-dot">.com</span>
+    </a>
+    <nav class="header-nav">
+      <button class="nav-btn active" onclick="setNav(this,'all')">All</button>
+      <button class="nav-btn" onclick="setNav(this,'films')">Films &amp; TV</button>
+      <button class="nav-btn" onclick="setNav(this,'music')">Music</button>
+      <button class="nav-btn" onclick="setNav(this,'new')">New Releases</button>
+      <button class="nav-btn" onclick="setNav(this,'best')">Best of 2025</button>
+    </nav>
+    <div class="header-right">
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Search Australian titles…" id="search-input" oninput="liveSearch(this.value)">
+      </div>
+      <button class="btn-signin">Sign In</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero-banner">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">Australia's review aggregator</div>
+      <h1>The best guide to<br><em>Australian</em> film, TV &amp; music</h1>
+      <p class="hero-sub">Aggregating scores from Australia's leading critics — The Guardian, SMH, The Australian, Vulture AU and more — into a single honest score.</p>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">4,200+</div>
+          <div class="stat-label">Titles reviewed</div>
+        </div>
+        <div>
+          <div class="stat-num">38</div>
+          <div class="stat-label">Critic publications</div>
+        </div>
+        <div>
+          <div class="stat-num">12,800+</div>
+          <div class="stat-label">User scores</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-featured" onclick="openModal('saltbush')">
+      <div class="feat-thumb" style="background: linear-gradient(135deg,#1a2a1a,#2a3a2a);">
+        🌿
+        <span class="feat-thumb-label">🔥 Trending</span>
+      </div>
+      <div class="feat-body">
+        <div class="feat-meta">
+          <span class="feat-cat">Film</span>
+          <span class="feat-year">2025 · Drama</span>
+        </div>
+        <div class="feat-title">Saltbush</div>
+        <div class="feat-row">
+          <div class="score lg score-green">91</div>
+          <div class="feat-reviews">Based on <span>18 reviews</span><br>User score: <span>8.4</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCORE GUIDE -->
+<div class="section-wrap" style="padding-bottom:0">
+  <div class="score-guide">
+    <div class="guide-item">
+      <div class="guide-swatch score-green" style="font-size:0.7rem;font-weight:700">81+</div>
+      <div class="guide-text"><strong>Universal acclaim</strong>Overwhelmingly positive</div>
+    </div>
+    <div class="guide-item">
+      <div class="guide-swatch score-green" style="font-size:0.7rem;font-weight:700">61</div>
+      <div class="guide-text"><strong>Generally favourable</strong>More good than bad</div>
+    </div>
+    <div class="guide-item">
+      <div class="guide-swatch score-yellow" style="font-size:0.7rem;font-weight:700">40</div>
+      <div class="guide-text"><strong>Mixed reviews</strong>Proceed with caution</div>
+    </div>
+    <div class="guide-item">
+      <div class="guide-swatch score-red" style="font-size:0.7rem;font-weight:700">0</div>
+      <div class="guide-text"><strong>Overwhelming dislike</strong>Critically panned</div>
+    </div>
+    <div class="guide-item" style="margin-left:auto">
+      <div class="guide-swatch score-na">NR</div>
+      <div class="guide-text"><strong>Not yet rated</strong>Awaiting reviews</div>
+    </div>
+  </div>
+</div>
+
+<!-- FILMS & TV -->
+<section class="section-wrap">
+  <div class="section-head">
+    <div class="section-title">New in Film &amp; TV</div>
+    <a href="#" class="see-all">See all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab(this,'films-new')">New Releases</button>
+    <button class="tab" onclick="switchTab(this,'films-top')">Top Rated</button>
+    <button class="tab" onclick="switchTab(this,'films-coming')">Coming Soon</button>
+  </div>
+  <div class="genre-chips">
+    <button class="chip active" onclick="toggleChip(this)">All Genres</button>
+    <button class="chip" onclick="toggleChip(this)">Drama</button>
+    <button class="chip" onclick="toggleChip(this)">Comedy</button>
+    <button class="chip" onclick="toggleChip(this)">Thriller</button>
+    <button class="chip" onclick="toggleChip(this)">Documentary</button>
+    <button class="chip" onclick="toggleChip(this)">Sci-Fi</button>
+    <button class="chip" onclick="toggleChip(this)">Horror</button>
+  </div>
+
+  <div class="card-grid" id="films-grid">
+    <!-- Card 1 -->
+    <div class="media-card" onclick="openModal('saltbush')">
+      <div class="card-thumb" style="background:linear-gradient(135deg,#1a2a1a,#2a3a2a)">🌿</div>
+      <div class="card-body">
+        <div class="card-title-text">Saltbush</div>
+        <div class="card-meta">2025 · Drama</div>
+        <div class="card-score-row">
+          <div class="score score-green">91</div>
+          <div class="user-score"><strong>8.4</strong>User</div>
+        </div>
+      </div>
+    </div>
+    <!-- Card 2 -->
+    <div class="media-card" onclick="openModal('thegate')">
+      <div class="card-thumb" style="background:linear-gradient(135deg,#1a1a2a,#2a1a3a)">🌉</div>
+      <div class="card-body">
+        <div class="card-title-text">The Gate</div>
+        <div class="card-meta">2025 · Thriller</div>
+        <div class="card-score-row">
+          <div class="score score-green">84</div>
+          <div class="user-score"><strong>7.9</strong>User</div>
+        </div>
+      </div>
+    </div>
+    <!-- Card 3 -->
+    <div class="media-card" onclick="openModal('redfern')">
+      <div class="card-thumb" style="background:linear-gradient(135deg,#2a1a1a,#3a1a1a)">🏙️</div>
+      <div class="card-body">
+        <div class="card-title-text">Redfern Rising</div>
+        <div class="card-meta">2025 · Drama Series</div>
+        <div class="card-score-row">
+          <div class="score score-green">79</div>
+          <div class="user-score"><strong>8.1</strong>User</div>
+        </div>
+      </div>
+    </div>
+    <!-- Card 4 -->
+    <div class="media-card" onclick="openModal('barrens')">
+      <div class="card-thumb" style="background:linear-gradient(135deg,#1a2a2a,#1a3030)">🏜️</div>
+      <div class="card-body">
+        <div class="card-title-text">The Barrens</div>
+        <div class="card-meta">2025 · Documentary</div>
+        <div class="card-score-row">
+          <div class="score score-yellow">62</div>
+          <div class="user-score"><strong>6.8</strong>User</div>
+        </div>
+      </div>
+    </div>
+    <!-- Card 5 -->
+    <div class="media-card" onclick="openModal('larrikin')">
+      <div class="card-thumb" style="background:linear-gradient(135deg,#2a2a1a,#35301a)">😄</div>
+      <div class="card-body">
+        <div class="card-title-text">Larrikin</div>
+        <div class="card-meta">2025 · Comedy</div>
+        <div class="card-score-row">
+          <div class="score score-yellow">58</div>
+          <div class="user-score"><strong>5.9</strong>User</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- MUSIC -->
+<section class="section-wrap">
+  <div class="section-head">
+    <div class="section-title">New in Music</div>
+    <a href="#" class="see-all">See all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab(this,'music-new')">New Albums</button>
+    <button class="tab" onclick="switchTab(this,'music-top')">Top Rated</button>
+    <button class="tab" onclick="switchTab(this,'music-ep')">EPs &amp; Singles</button>
+  </div>
+  <div class="genre-chips">
+    <button class="chip active" onclick="toggleChip(this)">All Genres</button>
+    <button class="chip" onclick="toggleChip(this)">Indie</button>
+    <button class="chip" onclick="toggleChip(this)">Hip-Hop</button>
+    <button class="chip" onclick="toggleChip(this)">Electronic</button>
+    <button class="chip" onclick="toggleChip(this)">Rock</button>
+    <button class="chip" onclick="toggleChip(this)">Folk</button>
+    <button class="chip" onclick="toggleChip(this)">Pop</button>
+  </div>
+
+  <div class="card-grid" id="music-grid">
+    <!-- Album 1 -->
+    <div class="media-card" onclick="openModal('red-dirt')">
+      <div class="card-thumb square" style="background:linear-gradient(135deg,#2a1010,#3a2010)">🎸</div>
+      <div class="card-body">
+        <div class="card-title-text">Red Dirt Gospel</div>
+        <div class="card-meta">Stella Ray · 2025</div>
+        <div class="card-score-row">
+          <div class="score score-green">93</div>
+          <div class="user-score"><strong>9.1</strong>User</div>
+        </div>
+      </div>
+    </div>
+    <!-- Album 2 -->
+    <div class="media-card" onclick="openModal('harbour')">
+      <div class="card-thumb square" style="background:linear-gradient(135deg,#101a2a,#10202a)">🌊</div>
+      <div class="card-body">
+        <div class="card-title-text">Harbour Lights</div>
+        <div class="card-meta">The Bondi Set · 2025</div>
+        <div class="card-score-row">
+          <div class="score score-green">88</div>
+          <div class="user-score"><strong>8.6</strong>User</div>
+        </div>
+      </div>
+    </div>
+    <!-- Album 3 -->
+    <div class="media-card" onclick="openModal('western')">
+      <div class="card-thumb square" style="background:linear-gradient(135deg,#1a1a2a,#251a35)">🎹</div>
+      <div class="card-body">
+        <div class="card-title-text">Western Mystic</div>
+        <div class="card-meta">Noon Collective · 2025</div>
+        <div class="card-score-row">
+          <div class="score score-green">82</div>
+          <div class="user-score"><strong>7.7</strong>User</div>
+        </div>
+      </div>
+    </div>
+    <!-- Album 4 -->
+    <div class="media-card" onclick="openModal('gone-bush')">
+      <div class="card-thumb square" style="background:linear-gradient(135deg,#102010,#152515)">🌱</div>
+      <div class="card-body">
+        <div class="card-title-text">Gone Bush</div>
+        <div class="card-meta">Marlow &amp; Dean · 2025</div>
+        <div class="card-score-row">
+          <div class="score score-yellow">67</div>
+          <div class="user-score"><strong>7.2</strong>User</div>
+        </div>
+      </div>
+    </div>
+    <!-- Album 5 -->
+    <div class="media-card" onclick="openModal('concrete')">
+      <div class="card-thumb square" style="background:linear-gradient(135deg,#1e1e1e,#2a2a2a)">🎤</div>
+      <div class="card-body">
+        <div class="card-title-text">Concrete Sunrise</div>
+        <div class="card-meta">TXL · 2025</div>
+        <div class="card-score-row">
+          <div class="score score-green">76</div>
+          <div class="user-score"><strong>8.0</strong>User</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- BOTTOM 2-COL: New Releases List + Top Critics -->
+<div class="section-wrap">
+  <div class="two-col">
+
+    <!-- NEW RELEASES LIST -->
+    <div>
+      <div class="section-head" style="margin-bottom:1rem">
+        <div class="section-title">Opening This Week</div>
+        <a href="#" class="see-all">Calendar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="list-item" onclick="openModal('saltbush')">
+        <div class="list-thumb" style="background:linear-gradient(135deg,#1a2a1a,#2a3a2a)">🌿</div>
+        <div class="list-info">
+          <div class="list-title">Saltbush</div>
+          <div class="list-sub">Film · Drama · In cinemas now</div>
+        </div>
+        <div class="list-right">
+          <div class="score sm score-green">91</div>
+          <div class="review-count">18 reviews</div>
+        </div>
+      </div>
+
+      <div class="list-item" onclick="openModal('red-dirt')">
+        <div class="list-thumb" style="background:linear-gradient(135deg,#2a1010,#3a2010)">🎸</div>
+        <div class="list-info">
+          <div class="list-title">Red Dirt Gospel</div>
+          <div class="list-sub">Album · Stella Ray · Out now</div>
+        </div>
+        <div class="list-right">
+          <div class="score sm score-green">93</div>
+          <div class="review-count">22 reviews</div>
+        </div>
+      </div>
+
+      <div class="list-item" onclick="openModal('thegate')">
+        <div class="list-thumb" style="background:linear-gradient(135deg,#1a1a2a,#2a1a3a)">🌉</div>
+        <div class="list-info">
+          <div class="list-title">The Gate</div>
+          <div class="list-sub">Film · Thriller · In cinemas now</div>
+        </div>
+        <div class="list-right">
+          <div class="score sm score-green">84</div>
+          <div class="review-count">14 reviews</div>
+        </div>
+      </div>
+
+      <div class="list-item" onclick="openModal('harbour')">
+        <div class="list-thumb" style="background:linear-gradient(135deg,#101a2a,#10202a)">🌊</div>
+        <div class="list-info">
+          <div class="list-title">Harbour Lights</div>
+          <div class="list-sub">Album · The Bondi Set · Out now</div>
+        </div>
+        <div class="list-right">
+          <div class="score sm score-green">88</div>
+          <div class="review-count">19 reviews</div>
+        </div>
+      </div>
+
+      <div class="list-item">
+        <div class="list-thumb" style="background:linear-gradient(135deg,#201a10,#2a2010)">🐊</div>
+        <div class="list-info">
+          <div class="list-title">Crocodile Country</div>
+          <div class="list-sub">Film · Adventure · Opens Jun 20</div>
+        </div>
+        <div class="list-right">
+          <div class="score sm score-na">NR</div>
+          <div class="review-count">0 reviews</div>
+        </div>
+      </div>
+
+      <div class="list-item">
+        <div class="list-thumb" style="background:linear-gradient(135deg,#1a1020,#251030)">🎧</div>
+        <div class="list-info">
+          <div class="list-title">Outer Loop</div>
+          <div class="list-sub">Album · Kira Vale · Out Jun 21</div>
+        </div>
+        <div class="list-right">
+          <div class="score sm score-na">NR</div>
+          <div class="review-count">0 reviews</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP CRITICS -->
+    <div>
+      <div class="section-head" style="margin-bottom:1rem">
+        <div class="section-title">Featured Critics</div>
+        <a href="#" class="see-all">All critics <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="critic-row">
+        <div class="critic-avatar" style="background:#1a2535;color:#6aabf0">SL</div>
+        <div class="critic-info">
+          <div class="critic-name">Sarah Leung</div>
+          <div class="critic-pub">The Sydney Morning Herald</div>
+        </div>
+        <div class="critic-count">142 reviews</div>
+      </div>
+      <div class="critic-row">
+        <div class="critic-avatar" style="background:#251a20;color:#e07090">MM</div>
+        <div class="critic-info">
+          <div class="critic-name">Marcus McAllister</div>
+          <div class="critic-pub">The Guardian Australia</div>
+        </div>
+        <div class="critic-count">198 reviews</div>
+      </div>
+      <div class="critic-row">
+        <div class="critic-avatar" style="background:#1a2a1a;color:#50d080">TK</div>
+        <div class="critic-info">
+          <div class="critic-name">Tara Kourakis</div>
+          <div class="critic-pub">Rolling Stone AU</div>
+        </div>
+        <div class="critic-count">87 reviews</div>
+      </div>
+      <div class="critic-row">
+        <div class="critic-avatar" style="background:#25201a;color:#e0a050">JB</div>
+        <div class="critic-info">
+          <div class="critic-name">James Broadbent</div>
+          <div class="critic-pub">The Australian</div>
+        </div>
+        <div class="critic-count">215 reviews</div>
+      </div>
+      <div class="critic-row">
+        <div class="critic-avatar" style="background:#1a1a25;color:#a080e0">PN</div>
+        <div class="critic-info">
+          <div class="critic-name">Priya Nair</div>
+          <div class="critic-pub">ABC Arts</div>
+        </div>
+        <div class="critic-count">103 reviews</div>
+      </div>
+      <div class="critic-row">
+        <div class="critic-avatar" style="background:#25151a;color:#e06060">CR</div>
+        <div class="critic-info">
+          <div class="critic-name">Cam Robertson</div>
+          <div class="critic-pub">Tone Deaf</div>
+        </div>
+        <div class="critic-count">76 reviews</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="footer-brand-logo"><span style="color:var(--gold)">Oz</span>Critic<span style="color:var(--faint)">.com</span></span>
+      <p>Australia's independent aggregator for film, TV and music criticism. Not affiliated with any studio, label, or broadcaster.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Browse</h5>
+      <ul>
+        <li><a href="#">Films</a></li>
+        <li><a href="#">TV Series</a></li>
+        <li><a href="#">Music Albums</a></li>
+        <li><a href="#">New Releases</a></li>
+        <li><a href="#">Best of 2025</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Discover</h5>
+      <ul>
+        <li><a href="#">Top Critics</a></li>
+        <li><a href="#">By Genre</a></li>
+        <li><a href="#">By State</a></li>
+        <li><a href="#">Coming Soon</a></li>
+        <li><a href="#">User Lists</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>About</h5>
+      <ul>
+        <li><a href="#">How scores work</a></li>
+        <li><a href="#">Submit a publication</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="aus-flag">🦘 Made in Australia &nbsp;·&nbsp; © 2025 OzCritic.com</span>
+    <span>Scores are aggregated from verified Australian publications only</span>
+  </div>
+</footer>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal-content">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+const items = {
+  saltbush: {
+    emoji:'🌿', bg:'linear-gradient(135deg,#1a2a1a,#2a3a2a)',
+    title:'Saltbush', sub:'2025 · Film · Drama · Dir. Mia Nguyen',
+    criticScore:91, userScore:'8.4', reviews:18,
+    desc:'A sweeping drama set in outback South Australia following three generations of a Ngarrindjeri family navigating land rights, identity, and memory. Nguyen\'s debut feature has been hailed as a landmark of contemporary Australian cinema.',
+    snippets:[
+      {pub:'The Guardian Australia', author:'Marcus McAllister', score:95, cls:'score-green', text:'A film of extraordinary patience and visual intelligence. Saltbush earns every frame of its 140-minute runtime.'},
+      {pub:'Sydney Morning Herald', author:'Sarah Leung', score:90, cls:'score-green', text:'Mia Nguyen announces herself as a major voice. The performances are staggering; the landscape, a character in itself.'},
+      {pub:'The Australian', author:'James Broadbent', score:85, cls:'score-green', text:'Slow to start, but by the third act, Saltbush is undeniably moving. A film that stays with you.'},
+    ]
+  },
+  thegate: {
+    emoji:'🌉', bg:'linear-gradient(135deg,#1a1a2a,#2a1a3a)',
+    title:'The Gate', sub:'2025 · Film · Thriller · Dir. Sam Walsh',
+    criticScore:84, userScore:'7.9', reviews:14,
+    desc:'A taut psychological thriller set across Melbourne and the Gold Coast, following a forensic accountant who uncovers a money-laundering network embedded in the construction industry.',
+    snippets:[
+      {pub:'ABC Arts', author:'Priya Nair', score:88, cls:'score-green', text:'Walsh wrings genuine tension from boardrooms and spreadsheets. Surprising, assured, and very Australian in the best way.'},
+      {pub:'Time Out Melbourne', author:'Kat Irving', score:80, cls:'score-green', text:'A thriller that trusts its audience\'s intelligence. The third act wobbles slightly, but the ride is worth it.'},
+    ]
+  },
+  redfern: {
+    emoji:'🏙️', bg:'linear-gradient(135deg,#2a1a1a,#3a1a1a)',
+    title:'Redfern Rising', sub:'2025 · TV Series · Drama · ABC',
+    criticScore:79, userScore:'8.1', reviews:11,
+    desc:'A six-part drama series tracing the lives of four young people in Sydney\'s Redfern neighbourhood across a single year. Co-created with First Nations writers, it won the AACTA Award for best drama series.',
+    snippets:[
+      {pub:'The Saturday Paper', author:'Louise Chen', score:83, cls:'score-green', text:'Dense, funny and heartbreaking by turns. Redfern Rising is the best thing on Australian television this year.'},
+      {pub:'Sydney Morning Herald', author:'Sarah Leung', score:75, cls:'score-green', text:'Ambitious and mostly successful. The ensemble is flawless; only the pacing in episodes three and four lets it down.'},
+    ]
+  },
+  'red-dirt': {
+    emoji:'🎸', bg:'linear-gradient(135deg,#2a1010,#3a2010)',
+    title:'Red Dirt Gospel', sub:'2025 · Album · Stella Ray · Country / Folk',
+    criticScore:93, userScore:'9.1', reviews:22,
+    desc:'The third studio album from Broken Hill-born Stella Ray is a career-defining statement — ten songs that weave outback mythology with raw personal confessional. Produced by herself in a shed outside Coober Pedy.',
+    snippets:[
+      {pub:'Rolling Stone AU', author:'Tara Kourakis', score:98, cls:'score-green', text:'One of the great Australian albums of the decade. Stella Ray has made something genuinely timeless.'},
+      {pub:'The Guardian Australia', author:'Marcus McAllister', score:92, cls:'score-green', text:'Extraordinary. The production is bone-dry and perfect, and Ray\'s voice has never sounded more assured.'},
+      {pub:'Tone Deaf', author:'Cam Robertson', score:88, cls:'score-green', text:'Red Dirt Gospel is the real deal — unhurried, uncompromising, and completely its own thing.'},
+    ]
+  },
+  harbour: {
+    emoji:'🌊', bg:'linear-gradient(135deg,#101a2a,#10202a)',
+    title:'Harbour Lights', sub:'2025 · Album · The Bondi Set · Indie / Dream Pop',
+    criticScore:88, userScore:'8.6', reviews:19,
+    desc:'Sydney indie five-piece The Bondi Set deliver their most cohesive record to date — a shimmering set of dream-pop songs that evoke Sydney Harbour at dusk, with lyrics that cut much deeper than the surface suggests.',
+    snippets:[
+      {pub:'Double J', author:'Erin Foo', score:91, cls:'score-green', text:'Harbour Lights sounds expensive — and it is, in the best sense. Every detail rewards repeated listening.'},
+      {pub:'NME AU', author:'Dev Patel', score:85, cls:'score-green', text:'The Bondi Set have been building to this. A mature, gorgeous record with genuine emotional stakes.'},
+    ]
+  },
+  western: {
+    emoji:'🎹', bg:'linear-gradient(135deg,#1a1a2a,#251a35)',
+    title:'Western Mystic', sub:'2025 · Album · Noon Collective · Electronic / Ambient',
+    criticScore:82, userScore:'7.7', reviews:15,
+    desc:'Perth-based electronic duo Noon Collective\'s fourth record expands their ambient palette with found sounds recorded across the Nullarbor Plain — a vast, immersive record that rewards patient listening.',
+    snippets:[
+      {pub:'Cyclic Defrost', author:'Meg Ross', score:87, cls:'score-green', text:'Western Mystic is genuinely transportive. Noon Collective are operating at the top of their game.'},
+    ]
+  },
+  barrens: {
+    emoji:'🏜️', bg:'linear-gradient(135deg,#1a2a2a,#1a3030)',
+    title:'The Barrens', sub:'2025 · Documentary · Dir. Paul Tran',
+    criticScore:62, userScore:'6.8', reviews:9,
+    desc:'A feature documentary about the decline of the Murray-Darling river system, following farmers, ecologists and government officials over three years. Earnest and important, if occasionally heavy-handed.',
+    snippets:[
+      {pub:'The Australian', author:'James Broadbent', score:65, cls:'score-yellow', text:'Important subject matter, intermittently compelling filmmaking. The Barrens would be stronger at 80 minutes rather than 110.'},
+      {pub:'ABC Arts', author:'Priya Nair', score:60, cls:'score-yellow', text:'The Barrens wears its heart on its sleeve, sometimes to its detriment. Still worth watching for the drone photography alone.'},
+    ]
+  },
+  larrikin: {
+    emoji:'😄', bg:'linear-gradient(135deg,#2a2a1a,#35301a)',
+    title:'Larrikin', sub:'2025 · Film · Comedy · Dir. Bec Wallace',
+    criticScore:58, userScore:'5.9', reviews:12,
+    desc:'A crowd-funded comedy about a failed comedian returning to regional Victoria for her father\'s funeral. Has its moments, but struggles to decide what kind of film it wants to be.',
+    snippets:[
+      {pub:'Time Out Melbourne', author:'Kat Irving', score:55, cls:'score-yellow', text:'Larrikin charms more than it earns. The lead performance is genuinely funny; the script around it, less so.'},
+      {pub:'The Guardian Australia', author:'Marcus McAllister', score:60, cls:'score-yellow', text:'An affectionate mess. The funeral set-piece is worth the price of admission; the rest is scaffolding.'},
+    ]
+  },
+  'gone-bush': {
+    emoji:'🌱', bg:'linear-gradient(135deg,#102010,#152515)',
+    title:'Gone Bush', sub:'2025 · Album · Marlow & Dean · Folk / Acoustic',
+    criticScore:67, userScore:'7.2', reviews:11,
+    desc:'A collaborative acoustic album from two Melbourne singer-songwriters, recorded over a weekend in a Daylesford farmhouse. Warm and intimate, though not without its longueurs.',
+    snippets:[
+      {pub:'The Music', author:'Jo Hardy', score:70, cls:'score-green', text:'Gone Bush succeeds on feel rather than ambition. Uneven but winningly human.'},
+    ]
+  },
+  concrete: {
+    emoji:'🎤', bg:'linear-gradient(135deg,#1e1e1e,#2a2a2a)',
+    title:'Concrete Sunrise', sub:'2025 · Album · TXL · Hip-Hop / R&B',
+    criticScore:76, userScore:'8.0', reviews:13,
+    desc:'Brisbane rapper TXL\'s sophomore album is a assured step up — lyrically dexterous, sonically adventurous, and deeply rooted in South-East Queensland hip-hop culture.',
+    snippets:[
+      {pub:'Rolling Stone AU', author:'Tara Kourakis', score:80, cls:'score-green', text:'TXL sounds fully formed on Concrete Sunrise. The production choices are bold; the flow, effortless.'},
+      {pub:'Tone Deaf', author:'Cam Robertson', score:72, cls:'score-green', text:'A step forward in every direction. TXL is one of the most interesting voices in Australian hip-hop.'},
+    ]
+  }
+};
+
+function scoreClass(n) {
+  if (n >= 61) return 'score-green';
+  if (n >= 40) return 'score-yellow';
+  return 'score-red';
+}
+
+function openModal(key) {
+  const d = items[key]; if (!d) return;
+  const cls = scoreClass(d.criticScore);
+  let snippetHTML = d.snippets.map(s => `
+    <div class="review-snippet">
+      <div class="review-snippet-score">
+        <div class="score sm ${s.cls}">${s.score}</div>
+        <div>
+          <div class="review-pub">${s.pub}</div>
+          <div class="review-author-name">${s.author}</div>
+        </div>
+      </div>
+      <div class="review-text">"${s.text}"</div>
+    </div>`).join('');
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-thumb" style="background:${d.bg};float:left;margin-right:1.25rem;margin-bottom:0.5rem">${d.emoji}</div>
+    <div class="modal-title">${d.title}</div>
+    <div class="modal-sub">${d.sub}</div>
+    <div style="clear:both"></div>
+    <div class="modal-scores">
+      <div class="modal-score-block">
+        <div class="score lg ${cls}">${d.criticScore}</div>
+        <div class="modal-score-label">Critic score</div>
+      </div>
+      <div class="modal-score-block">
+        <div class="score lg score-green" style="font-size:1.1rem">${d.userScore}</div>
+        <div class="modal-score-label">User score</div>
+      </div>
+      <div class="modal-score-block" style="text-align:left;padding-top:0.25rem">
+        <div style="font-size:1.1rem;font-family:var(--head);font-weight:700;color:var(--text)">${d.reviews}</div>
+        <div class="modal-score-label">Reviews</div>
+      </div>
+    </div>
+    <p class="modal-desc">${d.desc}</p>
+    <div class="modal-reviews-title">Critic reviews</div>
+    ${snippetHTML}
+  `;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal')) closeModal();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+function setNav(el, key) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function switchTab(el, key) {
+  el.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function toggleChip(el) {
+  el.closest('.genre-chips').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function liveSearch(val) {
+  if (!val.trim()) {
+    document.querySelectorAll('.media-card').forEach(c => c.style.opacity = '1');
+    return;
+  }
+  const q = val.toLowerCase();
+  document.querySelectorAll('.media-card').forEach(c => {
+    const text = c.querySelector('.card-title-text')?.textContent.toLowerCase() || '';
+    c.style.opacity = text.includes(q) ? '1' : '0.25';
+  });
+}
+</script>
+</body>
+</html>

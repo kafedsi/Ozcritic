@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OzCritic — Australian Film, TV & Music Reviews</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:#0d0f10; --surface:#161a1c; --surface2:#1e2326;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+  --text:#f0eeeb; --muted:#8a8f94; --faint:#4a4f54;
+  --gold:#f5c518; --green:#21d07a; --yellow:#f5c518; --red:#ff5f5f;
+  --orange:#ff9a3c; --teal:#00b4d8;
+  --head:'Syne',sans-serif; --body:'Inter',sans-serif;
+}
+html { scroll-behavior:smooth; }
+body { font-family:var(--body); background:var(--bg); color:var(--text); font-size:15px; line-height:1.6; min-height:100vh; }
+::-webkit-scrollbar{width:6px} ::-webkit-scrollbar-track{background:var(--bg)} ::-webkit-scrollbar-thumb{background:var(--faint);border-radius:3px}
+
+/* SCORE */
+.score { display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:6px; font-family:var(--head); font-size:1.1rem; font-weight:700; flex-shrink:0; }
+.score.lg{width:62px;height:62px;font-size:1.45rem;border-radius:8px}
+.score.sm{width:36px;height:36px;font-size:0.85rem;border-radius:5px}
+.score-green{background:#1a3d2b;color:var(--green)} .score-yellow{background:#3a3010;color:var(--yellow)} .score-red{background:#3a1414;color:var(--red)} .score-na{background:var(--surface2);color:var(--muted)}
+
+/* HEADER */
+header { position:sticky; top:0; z-index:200; background:rgba(13,15,16,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); }
+.header-inner { max-width:1200px; margin:0 auto; padding:0 1.5rem; height:60px; display:flex; align-items:center; gap:2rem; }
+.logo { font-family:var(--head); font-size:1.35rem; font-weight:800; color:var(--text); text-decoration:none; letter-spacing:-0.02em; display:flex; align-items:center; gap:2px; white-space:nowrap; }
+.logo-oz{color:var(--gold)} .logo-dot{color:var(--muted);font-weight:400}
+.header-nav{display:flex;gap:.25rem;flex:1}
+.nav-btn { padding:.4rem .9rem; font-family:var(--body); font-size:.82rem; font-weight:500; color:var(--muted); background:none; border:none; border-radius:6px; cursor:pointer; transition:all .15s; white-space:nowrap; }
+.nav-btn:hover{color:var(--text);background:var(--surface2)} .nav-btn.active{color:var(--text);background:var(--surface2)}
+.header-right{display:flex;align-items:center;gap:.75rem;margin-left:auto}
+.search-bar { display:flex; align-items:center; gap:.5rem; background:var(--surface2); border:1px solid var(--border2); border-radius:8px; padding:.4rem .8rem; transition:border-color .2s; }
+.search-bar:focus-within{border-color:rgba(255,255,255,.25)}
+.search-bar svg{width:14px;height:14px;color:var(--muted);flex-shrink:0}
+.search-bar input { background:none; border:none; outline:none; font-family:var(--body); font-size:.82rem; color:var(--text); width:180px; }
+.search-bar input::placeholder{color:var(--faint)}
+.btn-auth { padding:.4rem 1rem; font-family:var(--body); font-size:.82rem; font-weight:500; border:none; border-radius:6px; cursor:pointer; transition:opacity .2s; }
+.btn-primary{color:var(--bg);background:var(--text)} .btn-primary:hover{opacity:.85}
+.btn-outline{color:var(--text);background:transparent;border:1px solid var(--border2)} .btn-outline:hover{border-color:var(--border2);background:var(--surface2)}
+
+/* HERO */
+.hero-banner { background:linear-gradient(135deg,#0d1520,#0d1218,#100d15); border-bottom:1px solid var(--border); padding:3.5rem 1.5rem; position:relative; overflow:hidden; }
+.hero-banner::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 70% 50%,rgba(245,197,24,.06),transparent 60%),radial-gradient(ellipse at 20% 80%,rgba(0,180,216,.05),transparent 50%); pointer-events:none; }
+.hero-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 340px; gap:3rem; align-items:center; }
+.hero-eyebrow { display:inline-flex; align-items:center; gap:.5rem; font-size:.72rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; }
+.hero-eyebrow::before{content:'';width:20px;height:2px;background:var(--gold);border-radius:1px}
+.hero h1 { font-family:var(--head); font-size:clamp(2rem,4vw,3rem); font-weight:800; line-height:1.1; letter-spacing:-.03em; margin-bottom:.75rem; }
+.hero h1 em{font-style:italic;color:var(--gold);font-weight:400}
+.hero-sub{font-size:.95rem;color:var(--muted);line-height:1.7;max-width:480px;margin-bottom:1.75rem}
+.hero-stats{display:flex;gap:2rem}
+.stat-num{font-family:var(--head);font-size:1.6rem;font-weight:700;color:var(--text);line-height:1}
+.stat-label{font-size:.75rem;color:var(--muted);margin-top:.2rem}
+.hero-featured{background:var(--surface);border:1px solid var(--border2);border-radius:14px;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.hero-featured:hover{border-color:rgba(255,255,255,.2)}
+.feat-thumb{width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative}
+.feat-thumb-label{position:absolute;top:10px;left:10px;font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:var(--gold);color:#000;padding:3px 8px;border-radius:4px}
+.feat-body{padding:1.1rem 1.25rem 1.25rem}
+.feat-meta{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem}
+.feat-cat{font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+.feat-year{font-size:.75rem;color:var(--muted)}
+.feat-title{font-family:var(--head);font-size:1.1rem;font-weight:700;line-height:1.25;margin-bottom:.75rem}
+.feat-row{display:flex;align-items:center;justify-content:space-between}
+.feat-reviews{font-size:.78rem;color:var(--muted)}
+.feat-reviews span{color:var(--text);font-weight:500}
+
+/* SECTION */
+.section-wrap{max-width:1200px;margin:0 auto;padding:2.5rem 1.5rem}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+.section-title{font-family:var(--head);font-size:1.1rem;font-weight:700;display:flex;align-items:center;gap:.6rem}
+.section-title::before{content:'';width:3px;height:18px;background:var(--gold);border-radius:2px;display:inline-block}
+.see-all{font-size:.78rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:.3rem;transition:color .15s}
+.see-all:hover{color:var(--text)}
+.see-all svg{width:12px;height:12px}
+
+/* TABS */
+.tabs{display:flex;gap:.25rem;margin-bottom:1.5rem}
+.tab{padding:.4rem 1rem;font-family:var(--body);font-size:.8rem;font-weight:500;color:var(--muted);background:none;border:1px solid transparent;border-radius:6px;cursor:pointer;transition:all .15s}
+.tab:hover{color:var(--text);border-color:var(--border2)} .tab.active{color:var(--text);background:var(--surface2);border-color:var(--border2)}
+
+/* GENRE CHIPS */
+.genre-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.chip{padding:.3rem .8rem;font-size:.75rem;font-weight:500;background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:999px;cursor:pointer;transition:all .15s}
+.chip:hover{color:var(--text);border-color:var(--border2)} .chip.active{color:#000;background:var(--gold);border-color:var(--gold)}
+
+/* CARD GRID */
+.card-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem}
+.media-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color .15s,transform .15s}
+.media-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.card-thumb{width:100%;aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;font-size:2.2rem;background:var(--surface2)}
+.card-thumb.square{aspect-ratio:1/1}
+.card-body{padding:.75rem}
+.card-title-text{font-family:var(--head);font-size:.82rem;font-weight:700;line-height:1.3;margin-bottom:.25rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-meta{font-size:.72rem;color:var(--muted);margin-bottom:.6rem}
+.card-score-row{display:flex;align-items:center;justify-content:space-between}
+.user-score{font-size:.72rem;color:var(--muted);text-align:right}
+.user-score strong{display:block;font-size:.85rem;color:var(--text);font-weight:600}
+
+/* SCORE GUIDE */
+.score-guide{display:flex;gap:.75rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.guide-item{display:flex;align-items:center;gap:.5rem}
+.guide-swatch{width:28px;height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0}
+.guide-text{font-size:.73rem;color:var(--muted)}
+.guide-text strong{display:block;color:var(--text);font-size:.78rem}
+
+/* LIST */
+.list-item{display:flex;align-items:center;gap:1rem;padding:.85rem 0;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity .15s}
+.list-item:hover{opacity:.8} .list-item:last-child{border-bottom:none}
+.list-thumb{width:52px;height:52px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:var(--surface2)}
+.list-info{flex:1;min-width:0}
+.list-title{font-family:var(--head);font-size:.9rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-sub{font-size:.76rem;color:var(--muted);margin-top:.15rem}
+.list-right{display:flex;flex-direction:column;align-items:flex-end;gap:.25rem;flex-shrink:0}
+.review-count{font-size:.7rem;color:var(--faint)}
+
+/* 2-COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+
+/* CRITIC ROW */
+.critic-row{display:flex;align-items:center;gap:.85rem;padding:.75rem 0;border-bottom:1px solid var(--border)}
+.critic-row:last-child{border-bottom:none}
+.critic-avatar{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;background:var(--surface2);color:var(--muted)}
+.critic-info{flex:1} .critic-name{font-size:.88rem;font-weight:600} .critic-pub{font-size:.75rem;color:var(--muted)} .critic-count{font-size:.75rem;color:var(--faint);white-space:nowrap}
+
+/* LOADING / EMPTY */
+.skeleton{background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-card{height:260px;border-radius:10px}
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--muted)}
+.empty-state h3{font-family:var(--head);font-size:1rem;margin-bottom:.5rem;color:var(--text)}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.75rem 1.25rem;font-size:.85rem;z-index:999;transform:translateY(6px);opacity:0;transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:none}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1.5rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:600px;padding:2rem;position:relative;max-height:90vh;overflow-y:auto}
+.modal-close{position:absolute;top:1rem;right:1rem;background:var(--surface2);border:none;border-radius:6px;width:30px;height:30px;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:1rem;transition:color .15s}
+.modal-close:hover{color:var(--text)}
+.modal-thumb{width:80px;height:80px;border-radius:10px;float:left;margin:0 1.25rem 1rem 0;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:var(--surface2)}
+.modal-title{font-family:var(--head);font-size:1.4rem;font-weight:800;line-height:1.2}
+.modal-sub{font-size:.82rem;color:var(--muted);margin:.3rem 0 1rem}
+.modal-scores{display:flex;gap:1.5rem;margin:1.25rem 0;clear:both}
+.modal-score-block{text-align:center}
+.modal-score-label{font-size:.7rem;color:var(--muted);margin-top:.4rem;text-transform:uppercase;letter-spacing:.06em}
+.modal-desc{font-size:.875rem;color:var(--muted);line-height:1.7;margin-bottom:1.25rem}
+.modal-reviews-title{font-family:var(--head);font-size:.9rem;font-weight:700;margin-bottom:.75rem}
+.review-snippet{background:var(--surface2);border-radius:8px;padding:.85rem 1rem;margin-bottom:.6rem}
+.review-snippet-score{display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem}
+.review-pub{font-size:.78rem;font-weight:600;color:var(--text)}
+.review-author-name{font-size:.72rem;color:var(--muted)}
+.review-text{font-size:.82rem;color:var(--muted);line-height:1.6;font-style:italic}
+
+/* USER REVIEW FORM */
+.review-form{background:var(--surface2);border-radius:10px;padding:1.25rem;margin-top:1rem}
+.review-form h4{font-family:var(--head);font-size:.9rem;font-weight:700;margin-bottom:1rem}
+.score-picker{display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap}
+.score-btn{width:36px;height:36px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--body)}
+.score-btn:hover{border-color:var(--border2);color:var(--text)}
+.score-btn.selected{background:var(--gold);color:#000;border-color:var(--gold)}
+.review-textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.6rem .8rem;color:var(--text);font-family:var(--body);font-size:.85rem;resize:vertical;min-height:80px;outline:none;transition:border-color .2s;margin-bottom:.75rem}
+.review-textarea:focus{border-color:var(--border2)}
+.review-textarea::placeholder{color:var(--faint)}
+.btn-submit{padding:.5rem 1.25rem;background:var(--gold);color:#000;border:none;border-radius:6px;font-family:var(--body);font-size:.85rem;font-weight:600;cursor:pointer;transition:opacity .15s}
+.btn-submit:hover{opacity:.85} .btn-submit:disabled{opacity:.4;cursor:not-allowed}
+
+/* AUTH MODAL */
+.auth-modal-body{padding:.5rem 0}
+.auth-tabs{display:flex;gap:.25rem;margin-bottom:1.5rem}
+.auth-input-group{margin-bottom:.85rem}
+.auth-input-group label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:.35rem}
+.auth-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.6rem .85rem;color:var(--text);font-family:var(--body);font-size:.9rem;outline:none;transition:border-color .2s}
+.auth-input:focus{border-color:var(--border2)}
+.auth-error{font-size:.8rem;color:var(--red);margin-bottom:.75rem;display:none}
+.auth-error.show{display:block}
+
+.divider{border:none;border-top:1px solid var(--border)}
+
+/* FOOTER */
+footer{background:var(--surface);border-top:1px solid var(--border);padding:3rem 1.5rem 2rem;margin-top:3rem}
+.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2.5rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+.footer-brand-logo{font-family:var(--head);font-size:1.2rem;font-weight:800;color:var(--text);margin-bottom:.75rem;display:block}
+.footer-brand p{font-size:.82rem;color:var(--muted);line-height:1.65;max-width:220px}
+.footer-col h5{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:.85rem}
+.footer-col ul{list-style:none} .footer-col li{margin-bottom:.5rem}
+.footer-col a{font-size:.82rem;color:var(--muted);text-decoration:none;transition:color .15s} .footer-col a:hover{color:var(--text)}
+.footer-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;font-size:.75rem;color:var(--faint)}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.hero-inner{animation:fadeIn .5s ease both}
+
+@media(max-width:1000px){.card-grid{grid-template-columns:repeat(4,1fr)}.hero-inner{grid-template-columns:1fr}}
+@media(max-width:768px){.card-grid{grid-template-columns:repeat(3,1fr)}.two-col{grid-template-columns:1fr}.footer-inner{grid-template-columns:1fr 1fr}.search-bar{display:none}}
+@media(max-width:500px){.card-grid{grid-template-columns:repeat(2,1fr)}.footer-inner{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo"><span class="logo-oz">Oz</span>Critic<span class="logo-dot">.com</span></a>
+    <nav class="header-nav">
+      <button class="nav-btn active" onclick="setNav(this,'all');loadAll()">All</button>
+      <button class="nav-btn" onclick="setNav(this,'films');loadByType('film')">Films</button>
+      <button class="nav-btn" onclick="setNav(this,'tv');loadByType('tv')">TV</button>
+      <button class="nav-btn" onclick="setNav(this,'music');loadByType('album')">Music</button>
+      <button class="nav-btn" onclick="setNav(this,'best');loadTopRated()">Best of 2025</button>
+    </nav>
+    <div class="header-right">
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Search Australian titles…" id="search-input" oninput="handleSearch(this.value)">
+      </div>
+      <button class="btn-auth btn-primary" id="auth-btn" onclick="openAuthModal()">Sign In</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero-banner">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">Australia's review aggregator</div>
+      <h1>The best guide to<br><em>Australian</em> film, TV &amp; music</h1>
+      <p class="hero-sub">Aggregating scores from Australia's leading critics — The Guardian, SMH, The Australian, ABC Arts and more — into a single honest score.</p>
+      <div class="hero-stats">
+        <div><div class="stat-num" id="stat-titles">—</div><div class="stat-label">Titles reviewed</div></div>
+        <div><div class="stat-num" id="stat-pubs">—</div><div class="stat-label">Publications</div></div>
+        <div><div class="stat-num" id="stat-reviews">—</div><div class="stat-label">Critic reviews</div></div>
+      </div>
+    </div>
+    <div class="hero-featured" id="hero-featured" onclick="">
+      <div class="feat-thumb" id="feat-thumb" style="background:var(--surface2)">
+        <span style="font-size:2rem">🌿</span>
+        <span class="feat-thumb-label">🔥 Trending</span>
+      </div>
+      <div class="feat-body">
+        <div class="feat-meta">
+          <span class="feat-cat" id="feat-cat">Film</span>
+          <span class="feat-year" id="feat-year">2025</span>
+        </div>
+        <div class="feat-title" id="feat-title">Loading…</div>
+        <div class="feat-row">
+          <div class="score lg score-na" id="feat-score">—</div>
+          <div class="feat-reviews" id="feat-reviews"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCORE GUIDE -->
+<div class="section-wrap" style="padding-bottom:0">
+  <div class="score-guide">
+    <div class="guide-item"><div class="guide-swatch score-green" style="font-size:.7rem;font-weight:700">81+</div><div class="guide-text"><strong>Universal acclaim</strong>Overwhelmingly positive</div></div>
+    <div class="guide-item"><div class="guide-swatch score-green" style="font-size:.7rem;font-weight:700">61</div><div class="guide-text"><strong>Generally favourable</strong>More good than bad</div></div>
+    <div class="guide-item"><div class="guide-swatch score-yellow" style="font-size:.7rem;font-weight:700">40</div><div class="guide-text"><strong>Mixed reviews</strong>Proceed with caution</div></div>
+    <div class="guide-item"><div class="guide-swatch score-red" style="font-size:.7rem;font-weight:700">0</div><div class="guide-text"><strong>Overwhelming dislike</strong>Critically panned</div></div>
+    <div class="guide-item" style="margin-left:auto"><div class="guide-swatch score-na">NR</div><div class="guide-text"><strong>Not yet rated</strong>Awaiting reviews</div></div>
+  </div>
+</div>
+
+<!-- FILMS & TV -->
+<section class="section-wrap" id="films-section">
+  <div class="section-head">
+    <div class="section-title">New in Film &amp; TV</div>
+    <a href="#" class="see-all" onclick="setNav(document.querySelector('.nav-btn:nth-child(2)'));loadByType('film');return false">See all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab(this);loadFilms('new')">New Releases</button>
+    <button class="tab" onclick="switchTab(this);loadFilms('top')">Top Rated</button>
+  </div>
+  <div class="genre-chips" id="film-genres">
+    <button class="chip active" onclick="toggleChip(this);loadFilms('new',null)">All Genres</button>
+    <button class="chip" onclick="toggleChip(this);loadFilms('new','Drama')">Drama</button>
+    <button class="chip" onclick="toggleChip(this);loadFilms('new','Comedy')">Comedy</button>
+    <button class="chip" onclick="toggleChip(this);loadFilms('new','Thriller')">Thriller</button>
+    <button class="chip" onclick="toggleChip(this);loadFilms('new','Documentary')">Documentary</button>
+  </div>
+  <div class="card-grid" id="films-grid"></div>
+</section>
+
+<hr class="divider">
+
+<!-- MUSIC -->
+<section class="section-wrap" id="music-section">
+  <div class="section-head">
+    <div class="section-title">New in Music</div>
+    <a href="#" class="see-all" onclick="setNav(document.querySelector('.nav-btn:nth-child(4)'));loadByType('album');return false">See all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab(this);loadMusic('new')">New Albums</button>
+    <button class="tab" onclick="switchTab(this);loadMusic('top')">Top Rated</button>
+  </div>
+  <div class="genre-chips" id="music-genres">
+    <button class="chip active" onclick="toggleChip(this);loadMusic('new',null)">All Genres</button>
+    <button class="chip" onclick="toggleChip(this);loadMusic('new','Indie')">Indie</button>
+    <button class="chip" onclick="toggleChip(this);loadMusic('new','Hip-Hop')">Hip-Hop</button>
+    <button class="chip" onclick="toggleChip(this);loadMusic('new','Electronic')">Electronic</button>
+    <button class="chip" onclick="toggleChip(this);loadMusic('new','Folk')">Folk</button>
+  </div>
+  <div class="card-grid" id="music-grid"></div>
+</section>
+
+<hr class="divider">
+
+<!-- BOTTOM 2-COL -->
+<div class="section-wrap">
+  <div class="two-col">
+    <div>
+      <div class="section-head" style="margin-bottom:1rem">
+        <div class="section-title">Opening This Week</div>
+      </div>
+      <div id="new-list"></div>
+    </div>
+    <div>
+      <div class="section-head" style="margin-bottom:1rem">
+        <div class="section-title">Featured Critics</div>
+        <a href="#" class="see-all">All critics <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+      <div id="critics-list"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="footer-brand-logo"><span style="color:var(--gold)">Oz</span>Critic<span style="color:var(--faint)">.com</span></span>
+      <p>Australia's independent aggregator for film, TV and music criticism. Not affiliated with any studio, label, or broadcaster.</p>
+    </div>
+    <div class="footer-col"><h5>Browse</h5><ul><li><a href="#">Films</a></li><li><a href="#">TV Series</a></li><li><a href="#">Music Albums</a></li><li><a href="#">New Releases</a></li><li><a href="#">Best of 2025</a></li></ul></div>
+    <div class="footer-col"><h5>Discover</h5><ul><li><a href="#">Top Critics</a></li><li><a href="#">By Genre</a></li><li><a href="#">Coming Soon</a></li><li><a href="#">User Lists</a></li></ul></div>
+    <div class="footer-col"><h5>About</h5><ul><li><a href="#">How scores work</a></li><li><a href="#">Submit a publication</a></li><li><a href="#">Contact</a></li><li><a href="#">Privacy Policy</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>🦘 Made in Australia · © 2025 OzCritic.com</span>
+    <span>Scores aggregated from verified Australian publications only</span>
+  </div>
+</footer>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detail-modal" onclick="closeModalOutside(event,'detail-modal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('detail-modal')">✕</button>
+    <div id="detail-body"></div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal" onclick="closeModalOutside(event,'auth-modal')">
+  <div class="modal" style="max-width:420px">
+    <button class="modal-close" onclick="closeModal('auth-modal')">✕</button>
+    <div class="auth-modal-body">
+      <div style="font-family:var(--head);font-size:1.3rem;font-weight:800;margin-bottom:1.5rem">Join OzCritic</div>
+      <div class="auth-tabs tabs">
+        <button class="tab active" id="tab-signin" onclick="switchAuthTab('signin')">Sign In</button>
+        <button class="tab" id="tab-signup" onclick="switchAuthTab('signup')">Create Account</button>
+      </div>
+      <div id="auth-error" class="auth-error"></div>
+      <div id="signup-username" style="display:none" class="auth-input-group">
+        <label>Username</label>
+        <input type="text" class="auth-input" id="input-username" placeholder="your_username">
+      </div>
+      <div class="auth-input-group">
+        <label>Email</label>
+        <input type="email" class="auth-input" id="input-email" placeholder="you@example.com">
+      </div>
+      <div class="auth-input-group">
+        <label>Password</label>
+        <input type="password" class="auth-input" id="input-password" placeholder="••••••••">
+      </div>
+      <button class="btn-submit" style="width:100%;padding:.65rem" id="auth-submit-btn" onclick="submitAuth()">Sign In</button>
+      <p style="font-size:.75rem;color:var(--faint);margin-top:.85rem;text-align:center">Your data is only used to save your reviews and watchlist.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- SUPABASE SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════
+// CONFIG — replace these two values with yours from
+// Supabase Dashboard → Project Settings → API
+// ═══════════════════════════════════════════════════
+const SUPABASE_URL = 'https://yihfguemdljvnzqjsbsl.supabase.co'
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpaGZndWVtZGxqdm56cWpzYnNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NjY1MTIsImV4cCI6MjA4OTM0MjUxMn0.n9zF9sShZgHhCvIe1RSklqSaYqzGEYBGira_f2_MRps'
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
+
+// ── STATE ──────────────────────────────────────────
+let currentUser = null
+let authMode = 'signin'
+
+// ── HELPERS ────────────────────────────────────────
+function scoreClass(n) {
+  if (n == null) return 'score-na'
+  if (n >= 61)  return 'score-green'
+  if (n >= 40)  return 'score-yellow'
+  return 'score-red'
+}
+function scoreLabel(n) { return n != null ? n : 'NR' }
+
+function typeLabel(t) {
+  return {film:'Film',tv:'TV Series',album:'Album',ep:'EP',single:'Single'}[t] || t
+}
+
+function toast(msg, ms = 3000) {
+  const el = document.getElementById('toast')
+  el.textContent = msg
+  el.classList.add('show')
+  setTimeout(() => el.classList.remove('show'), ms)
+}
+
+function skeletonCards(n = 5) {
+  return Array.from({length:n}).map(() =>
+    `<div class="skeleton skeleton-card"></div>`).join('')
+}
+
+// ── CARD BUILDERS ──────────────────────────────────
+function buildCard(t, square = false) {
+  const cls = scoreClass(t.critic_score)
+  const thumbBg = square
+    ? 'background:linear-gradient(135deg,var(--surface),var(--surface2))'
+    : 'background:linear-gradient(135deg,var(--surface),var(--surface2))'
+  return `
+    <div class="media-card" onclick="openDetail('${t.slug}')">
+      <div class="card-thumb ${square?'square':''}" style="${thumbBg}">
+        <span style="font-size:2.2rem">${square?'🎵':'🎬'}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-title-text">${t.title}</div>
+        <div class="card-meta">${t.creator || ''} · ${t.release_date?.slice(0,4) || '—'}</div>
+        <div class="card-score-row">
+          <div class="score sm ${cls}">${scoreLabel(t.critic_score)}</div>
+          <div class="user-score">
+            <strong>${t.user_score ?? '—'}</strong>User
+          </div>
+        </div>
+      </div>
+    </div>`
+}
+
+function buildListItem(t) {
+  const cls = scoreClass(t.critic_score)
+  return `
+    <div class="list-item" onclick="openDetail('${t.slug}')">
+      <div class="list-thumb">🎬</div>
+      <div class="list-info">
+        <div class="list-title">${t.title}</div>
+        <div class="list-sub">${typeLabel(t.type)} · ${t.creator || ''} · ${t.release_date || 'TBA'}</div>
+      </div>
+      <div class="list-right">
+        <div class="score sm ${cls}">${scoreLabel(t.critic_score)}</div>
+        <div class="review-count">${t.review_count || 0} reviews</div>
+      </div>
+    </div>`
+}
+
+function buildCriticRow(c) {
+  const initials = c.name.split(' ').map(w=>w[0]).join('').slice(0,2)
+  return `
+    <div class="critic-row">
+      <div class="critic-avatar">${initials}</div>
+      <div class="critic-info">
+        <div class="critic-name">${c.name}</div>
+        <div class="critic-pub">${c.publications?.name || ''}</div>
+      </div>
+      <div class="critic-count">${c.review_count || 0} reviews</div>
+    </div>`
+}
+
+// ── DATA LOADERS ───────────────────────────────────
+async function loadFilms(mode = 'new', genre = null) {
+  const grid = document.getElementById('films-grid')
+  grid.innerHTML = skeletonCards(5)
+  try {
+    let q = sb.from('titles')
+      .select('id,slug,title,type,genre,release_date,creator,critic_score,user_score,review_count')
+      .in('type', ['film','tv'])
+    if (genre) q = q.contains('genre', [genre])
+    if (mode === 'top') q = q.not('critic_score','is',null).order('critic_score',{ascending:false})
+    else q = q.order('release_date',{ascending:false})
+    q = q.limit(5)
+    const {data,error} = await q
+    if (error) throw error
+    grid.innerHTML = data.length
+      ? data.map(t => buildCard(t, false)).join('')
+      : `<div class="empty-state" style="grid-column:1/-1"><h3>No titles found</h3><p>Check back soon.</p></div>`
+  } catch(e) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><h3>Could not load titles</h3><p>${e.message}</p></div>`
+  }
+}
+
+async function loadMusic(mode = 'new', genre = null) {
+  const grid = document.getElementById('music-grid')
+  grid.innerHTML = skeletonCards(5)
+  try {
+    let q = sb.from('titles')
+      .select('id,slug,title,type,genre,release_date,creator,critic_score,user_score,review_count')
+      .in('type', ['album','ep','single'])
+    if (genre) q = q.contains('genre', [genre])
+    if (mode === 'top') q = q.not('critic_score','is',null).order('critic_score',{ascending:false})
+    else q = q.order('release_date',{ascending:false})
+    q = q.limit(5)
+    const {data,error} = await q
+    if (error) throw error
+    grid.innerHTML = data.length
+      ? data.map(t => buildCard(t, true)).join('')
+      : `<div class="empty-state" style="grid-column:1/-1"><h3>No albums found</h3><p>Check back soon.</p></div>`
+  } catch(e) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><h3>Could not load albums</h3><p>${e.message}</p></div>`
+  }
+}
+
+async function loadByType(type) {
+  document.getElementById('films-section').style.display = ['film','tv'].includes(type) ? '' : 'none'
+  document.getElementById('music-section').style.display = ['album','ep','single'].includes(type) ? '' : 'none'
+  if (['film','tv'].includes(type)) await loadFilms('new')
+  else await loadMusic('new')
+}
+
+async function loadAll() {
+  document.getElementById('films-section').style.display = ''
+  document.getElementById('music-section').style.display = ''
+  await Promise.all([loadFilms(), loadMusic()])
+}
+
+async function loadTopRated() {
+  document.getElementById('films-section').style.display = ''
+  document.getElementById('music-section').style.display = ''
+  await Promise.all([loadFilms('top'), loadMusic('top')])
+}
+
+async function loadFeatured() {
+  try {
+    const {data,error} = await sb.from('titles')
+      .select('*').eq('is_featured',true).limit(1).single()
+    if (error || !data) return
+    const t = data
+    document.getElementById('feat-cat').textContent = typeLabel(t.type)
+    document.getElementById('feat-year').textContent = t.release_date?.slice(0,4) || ''
+    document.getElementById('feat-title').textContent = t.title
+    const sc = document.getElementById('feat-score')
+    sc.textContent = scoreLabel(t.critic_score)
+    sc.className = `score lg ${scoreClass(t.critic_score)}`
+    document.getElementById('feat-reviews').innerHTML =
+      `Based on <span>${t.review_count || 0} reviews</span><br>User score: <span>${t.user_score ?? '—'}</span>`
+    document.getElementById('hero-featured').onclick = () => openDetail(t.slug)
+  } catch(e) { /* silently skip */ }
+}
+
+async function loadNewList() {
+  const list = document.getElementById('new-list')
+  try {
+    const {data,error} = await sb.from('titles')
+      .select('id,slug,title,type,creator,release_date,critic_score,review_count')
+      .order('release_date',{ascending:false}).limit(6)
+    if (error) throw error
+    list.innerHTML = data.map(t => buildListItem(t)).join('')
+  } catch(e) {
+    list.innerHTML = `<p style="color:var(--muted);font-size:.85rem">Could not load.</p>`
+  }
+}
+
+async function loadCritics() {
+  const el = document.getElementById('critics-list')
+  try {
+    const {data,error} = await sb.from('critics')
+      .select('name,slug,review_count,publications(name,slug)')
+      .order('review_count',{ascending:false}).limit(6)
+    if (error) throw error
+    el.innerHTML = data.map(c => buildCriticRow(c)).join('')
+  } catch(e) {
+    el.innerHTML = `<p style="color:var(--muted);font-size:.85rem">Could not load.</p>`
+  }
+}
+
+async function loadStats() {
+  try {
+    const [{count:tc},{count:rc},{count:pc}] = await Promise.all([
+      sb.from('titles').select('*',{count:'exact',head:true}),
+      sb.from('critic_reviews').select('*',{count:'exact',head:true}),
+      sb.from('publications').select('*',{count:'exact',head:true}),
+    ])
+    document.getElementById('stat-titles').textContent = (tc||0).toLocaleString()
+    document.getElementById('stat-pubs').textContent = pc||0
+    document.getElementById('stat-reviews').textContent = (rc||0).toLocaleString()
+  } catch(e) { /* skip */ }
+}
+
+// ── SEARCH ─────────────────────────────────────────
+let searchTimer = null
+async function handleSearch(val) {
+  clearTimeout(searchTimer)
+  if (!val.trim()) { loadAll(); return }
+  searchTimer = setTimeout(async () => {
+    const {data} = await sb.from('titles')
+      .select('id,slug,title,type,genre,release_date,creator,critic_score,user_score,review_count')
+      .ilike('title',`%${val}%`).limit(10)
+    const films = (data||[]).filter(t => ['film','tv'].includes(t.type))
+    const music = (data||[]).filter(t => ['album','ep','single'].includes(t.type))
+    document.getElementById('films-grid').innerHTML =
+      films.length ? films.map(t => buildCard(t,false)).join('') :
+      `<div class="empty-state" style="grid-column:1/-1"><h3>No film/TV results</h3></div>`
+    document.getElementById('music-grid').innerHTML =
+      music.length ? music.map(t => buildCard(t,true)).join('') :
+      `<div class="empty-state" style="grid-column:1/-1"><h3>No music results</h3></div>`
+  }, 300)
+}
+
+// ── DETAIL MODAL ───────────────────────────────────
+async function openDetail(slug) {
+  document.getElementById('detail-body').innerHTML =
+    `<div style="text-align:center;padding:2rem;color:var(--muted)">Loading…</div>`
+  document.getElementById('detail-modal').classList.add('open')
+  document.body.style.overflow = 'hidden'
+  try {
+    const {data:t, error} = await sb.from('titles').select(`
+      *,
+      critic_reviews(id,score,snippet,reviewed_at,critics(name,slug,publications(name)))
+    `).eq('slug',slug).single()
+    if (error) throw error
+
+    const cls = scoreClass(t.critic_score)
+    const reviews = (t.critic_reviews||[])
+      .sort((a,b)=>(b.score||0)-(a.score||0))
+
+    const snippetHTML = reviews.map(r => `
+      <div class="review-snippet">
+        <div class="review-snippet-score">
+          <div class="score sm ${scoreClass(r.score)}">${scoreLabel(r.score)}</div>
+          <div>
+            <div class="review-pub">${r.critics?.publications?.name || '—'}</div>
+            <div class="review-author-name">${r.critics?.name || ''}</div>
+          </div>
+        </div>
+        ${r.snippet ? `<div class="review-text">"${r.snippet}"</div>` : ''}
+      </div>`).join('')
+
+    const userReviewSection = currentUser ? `
+      <div class="review-form" id="user-review-form">
+        <h4>Your Score</h4>
+        <div class="score-picker" id="score-picker">
+          ${[1,2,3,4,5,6,7,8,9,10].map(n =>
+            `<button class="score-btn" onclick="selectScore(${n},this)">${n}</button>`
+          ).join('')}
+        </div>
+        <textarea class="review-textarea" id="review-body" placeholder="Write a review (optional)…"></textarea>
+        <button class="btn-submit" id="review-submit-btn" onclick="submitReview('${t.id}')">Submit Review</button>
+      </div>` : `
+      <div style="background:var(--surface2);border-radius:8px;padding:1rem;text-align:center;margin-top:1rem">
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:.6rem">Sign in to leave a review</p>
+        <button class="btn-submit" onclick="closeModal('detail-modal');openAuthModal()">Sign In</button>
+      </div>`
+
+    document.getElementById('detail-body').innerHTML = `
+      <div class="modal-thumb">🎬</div>
+      <div class="modal-title">${t.title}</div>
+      <div class="modal-sub">${t.creator || ''} · ${typeLabel(t.type)} · ${t.release_date?.slice(0,4)||'—'}</div>
+      <div style="clear:both"></div>
+      <div class="modal-scores">
+        <div class="modal-score-block">
+          <div class="score lg ${cls}">${scoreLabel(t.critic_score)}</div>
+          <div class="modal-score-label">Critic score</div>
+        </div>
+        <div class="modal-score-block">
+          <div class="score lg score-green" style="font-size:1.1rem">${t.user_score ?? '—'}</div>
+          <div class="modal-score-label">User score</div>
+        </div>
+        <div class="modal-score-block" style="text-align:left;padding-top:.25rem">
+          <div style="font-size:1.1rem;font-family:var(--head);font-weight:700;color:var(--text)">${t.review_count||0}</div>
+          <div class="modal-score-label">Reviews</div>
+        </div>
+      </div>
+      <p class="modal-desc">${t.description || ''}</p>
+      ${reviews.length ? `<div class="modal-reviews-title">Critic Reviews</div>${snippetHTML}` : ''}
+      <div class="modal-reviews-title" style="margin-top:1.25rem">User Reviews</div>
+      ${userReviewSection}
+    `
+  } catch(e) {
+    document.getElementById('detail-body').innerHTML =
+      `<p style="color:var(--red)">Failed to load: ${e.message}</p>`
+  }
+}
+
+let selectedScore = null
+function selectScore(n, btn) {
+  selectedScore = n
+  document.querySelectorAll('#score-picker .score-btn').forEach(b => b.classList.remove('selected'))
+  btn.classList.add('selected')
+}
+
+async function submitReview(titleId) {
+  if (!selectedScore) { toast('Please select a score first'); return }
+  const btn = document.getElementById('review-submit-btn')
+  const body = document.getElementById('review-body')?.value
+  btn.disabled = true; btn.textContent = 'Submitting…'
+  try {
+    const {error} = await sb.from('user_reviews').upsert({
+      title_id: titleId,
+      user_id: currentUser.id,
+      score: selectedScore,
+      body: body || null
+    }, {onConflict:'title_id,user_id'})
+    if (error) throw error
+    toast('Review submitted! ✓')
+    btn.textContent = 'Submitted ✓'
+    selectedScore = null
+  } catch(e) {
+    toast('Error: ' + e.message)
+    btn.disabled = false; btn.textContent = 'Submit Review'
+  }
+}
+
+// ── AUTH ───────────────────────────────────────────
+function openAuthModal() {
+  document.getElementById('auth-modal').classList.add('open')
+  document.body.style.overflow = 'hidden'
+}
+
+function switchAuthTab(mode) {
+  authMode = mode
+  document.getElementById('tab-signin').classList.toggle('active', mode==='signin')
+  document.getElementById('tab-signup').classList.toggle('active', mode==='signup')
+  document.getElementById('signup-username').style.display = mode==='signup' ? '' : 'none'
+  document.getElementById('auth-submit-btn').textContent = mode==='signin' ? 'Sign In' : 'Create Account'
+  document.getElementById('auth-error').classList.remove('show')
+}
+
+async function submitAuth() {
+  const email = document.getElementById('input-email').value.trim()
+  const password = document.getElementById('input-password').value
+  const errEl = document.getElementById('auth-error')
+  const btn = document.getElementById('auth-submit-btn')
+  errEl.classList.remove('show')
+  btn.disabled = true; btn.textContent = 'Please wait…'
+  try {
+    if (authMode === 'signup') {
+      const username = document.getElementById('input-username').value.trim()
+      if (!username) throw new Error('Username is required')
+      const {data,error} = await sb.auth.signUp({email,password})
+      if (error) throw error
+      if (data.user) {
+        await sb.from('profiles').insert({id:data.user.id,username,display_name:username})
+      }
+      toast('Account created! Check your email to verify.')
+      closeModal('auth-modal')
+    } else {
+      const {data,error} = await sb.auth.signInWithPassword({email,password})
+      if (error) throw error
+      currentUser = data.user
+      updateAuthUI()
+      closeModal('auth-modal')
+      toast('Welcome back!')
+    }
+  } catch(e) {
+    errEl.textContent = e.message; errEl.classList.add('show')
+  }
+  btn.disabled = false
+  btn.textContent = authMode==='signin' ? 'Sign In' : 'Create Account'
+}
+
+function updateAuthUI() {
+  const btn = document.getElementById('auth-btn')
+  if (currentUser) {
+    btn.textContent = 'Sign Out'
+    btn.onclick = async () => {
+      await sb.auth.signOut()
+      currentUser = null
+      updateAuthUI()
+      toast('Signed out.')
+    }
+  } else {
+    btn.textContent = 'Sign In'
+    btn.onclick = openAuthModal
+  }
+}
+
+// ── MODALS ─────────────────────────────────────────
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open')
+  document.body.style.overflow = ''
+}
+function closeModalOutside(e, id) {
+  if (e.target === document.getElementById(id)) closeModal(id)
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal('detail-modal'); closeModal('auth-modal')
+  }
+})
+
+// ── UI HELPERS ─────────────────────────────────────
+function setNav(el) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'))
+  el.classList.add('active')
+}
+function switchTab(el) {
+  el.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+  el.classList.add('active')
+}
+function toggleChip(el) {
+  el.closest('.genre-chips').querySelectorAll('.chip').forEach(c => c.classList.remove('active'))
+  el.classList.add('active')
+}
+
+// ── INIT ───────────────────────────────────────────
+async function init() {
+  // Restore session
+  const {data:{session}} = await sb.auth.getSession()
+  if (session?.user) { currentUser = session.user; updateAuthUI() }
+  sb.auth.onAuthStateChange((_,s) => {
+    currentUser = s?.user || null; updateAuthUI()
+  })
+
+  // Load all sections in parallel
+  await Promise.all([
+    loadFeatured(),
+    loadFilms(),
+    loadMusic(),
+    loadNewList(),
+    loadCritics(),
+    loadStats(),
+  ])
+}
+
+init()
+</script>
+</body>
+</html>
